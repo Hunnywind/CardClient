@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Nettention.Proud;
+using System;
+using UnityEngine.SceneManagement;
 
-public class GameClient : MonoBehaviour
+public partial class GameClient : MonoBehaviour
 {
+
+    public static GameClient instance = null;
+
     string m_serverAddr = "localhost";
     string m_groupName = "Group";
     string m_loginButtonText = "Connect";
@@ -24,10 +29,35 @@ public class GameClient : MonoBehaviour
     }
     State m_state = State.Stanby;
 
+    void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+    }
+
     // Use this for initialization
     void Start()
     {
+        m_S2CStub.ReplyLogon = (Nettention.Proud.HostID remote, Nettention.Proud.RmiContext rmiContext, int groupID, int result, String comment) =>
+        {
+            m_myP2PGroupID = (HostID)groupID;
 
+            if (result == 0) // ok
+            {
+                m_state = State.InGroup;
+            }
+            else
+            {
+                m_state = State.Failed;
+                m_failMessage = "Logon failed Error" + comment;
+            }
+            //Start_InVilleRmiStub();
+            return true;
+        };
     }
 
     // Update is called once per frame
@@ -38,13 +68,32 @@ public class GameClient : MonoBehaviour
 
     public void OnGUI()
     {
+        switch (m_state)
+        {
+            case State.Stanby:
+            case State.Conneting:
+            case State.LoggingOn:
+                OnGUI_Logon();
+                break;
+            case State.InGroup:
+            case State.Failed:
+                GUI.Label(new Rect(10, 30, 200, 80), m_failMessage);
+                if (GUI.Button(new Rect(10, 100, 180, 30), "Quit"))
+                {
+                    Application.Quit();
+                }
+                break;
+        }
+    }
+    private void OnGUI_Logon()
+    {
         GUI.Label(new Rect(10, 10, 300, 70), "Dual Manager");
         GUI.Label(new Rect(10, 60, 180, 30), "Server Address");
         m_serverAddr = GUI.TextField(new Rect(10, 80, 180, 30), m_serverAddr);
         GUI.Label(new Rect(10, 110, 180, 30), "Group Name");
         m_groupName = GUI.TextField(new Rect(10, 130, 180, 30), m_groupName);
 
-        if(GUI.Button(new Rect(10, 190, 100, 30), m_loginButtonText))
+        if (GUI.Button(new Rect(10, 190, 100, 30), m_loginButtonText))
         {
             if (m_state == State.Stanby)
             {
@@ -65,7 +114,9 @@ public class GameClient : MonoBehaviour
             {
                 m_state = State.LoggingOn;
                 m_loginButtonText = "Logging On...";
-                //m_C2SProxy.RequestLogon(HostID.HostID_Server, RmiContext.ReliableSend, m_GroupName, false);
+                m_C2SProxy.RequestLogon(HostID.HostID_Server, RmiContext.ReliableSend, m_groupName, false);
+                SceneManager.LoadScene("GamePlay");
+
             }
             else
             {
@@ -91,4 +142,8 @@ public class GameClient : MonoBehaviour
         m_netClient.Connect(cp);
     }
 
+    public void OnDestroy()
+    {
+        m_netClient.Dispose();
+    }
 }
