@@ -116,7 +116,6 @@ public partial class GameClient : MonoBehaviour
                 m_loginButtonText = "Logging On...";
                 m_C2SProxy.RequestLogon(HostID.HostID_Server, RmiContext.ReliableSend, m_groupName, false);
                 SceneManager.LoadScene("GamePlay");
-
             }
             else
             {

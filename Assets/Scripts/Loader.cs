@@ -9,7 +9,7 @@ public class Loader : MonoBehaviour
     {
         if(GameClient.instance == null)
         {
-            Instantiate(gameClient);
+            //Instantiate(gameClient);
         }
         if(LogicManager.instance == null)
         {
