@@ -1,17 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using GameItem;
 
-public class LogicManager : MonoBehaviour
+partial class LogicManager : MonoBehaviour
 {
     public static LogicManager instance = null;
 
-    public GameObject[] cards_inhand;
     public GameObject[] fields;
     public GameObject[] samples;
 
-    public List<Card> selectCards;
     public Dictionary<int, Card> summoningCards;
+
+    private Player player;
+
+    
+
+    public Level level = Level.Init;
 
     void Awake()
     {
@@ -23,37 +29,16 @@ public class LogicManager : MonoBehaviour
 
     void Start()
     {
+        summoningCards = new Dictionary<int, Card>();
+        FirstSettingInit();
+        PlayerSetting();
         FieldSetting();
         CardSetting();
     }
-    private void FieldSetting()
+
+    void Update()
     {
-        Vector3 newPosition = new Vector3();
-        int blank = 50;
-        for (int i = 0; i < fields.Length; i++)
-        {
-            fields[i] = Instantiate(samples[1]) as GameObject;
-            newPosition.x = (-((float)fields[i].GetComponent<SpriteRenderer>().sprite.texture.width * 1 / 2)
-            + ((float)fields[i].GetComponent<SpriteRenderer>().sprite.texture.width + blank) * (i - 2))
-            * 1 / 100;
-            newPosition.y = 1;
-            newPosition.z = 0;
-            fields[i].transform.position = newPosition;
-        }
+        if (Level.Init == level) FirstSettingUpdate();
     }
-    private void CardSetting()
-    {
-        Vector3 newPosition = new Vector3();
-        for (int i = 0; i < cards_inhand.Length; i++)
-        {
-            cards_inhand[i] = Instantiate(samples[0]) as GameObject;
-            newPosition.x = (-(float)Screen.width + 200
-                 + ((float)cards_inhand[i].GetComponent<SpriteRenderer>().sprite.texture.width)
-                 * i)
-                / 100;
-            newPosition.y = -2;
-            newPosition.z = 0;
-            cards_inhand[i].transform.position = newPosition;
-        }
-    }
+
 }
