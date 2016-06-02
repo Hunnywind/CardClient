@@ -1,13 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ObjectPool : MonoBehaviour {
-    public GameObject[] objects;
-
+    private List<GameObject> objects = new List<GameObject>();
 	void Start () {
-        //objects = gameObject.GetComponentsInChildren<GameObject>();
-        
-        
 	}
 	
     public void Init()
@@ -21,7 +18,10 @@ public class ObjectPool : MonoBehaviour {
             obj.SetActive(false);
         }
     }
-
+    public void AddObject(GameObject obj)
+    {
+        objects.Add(obj);
+    }
     public GameObject GetObject()
     {
         foreach(GameObject obj in objects)
@@ -34,5 +34,9 @@ public class ObjectPool : MonoBehaviour {
         }
         Debug.Log("Can't add object");
         return null;
+    }
+    public List<GameObject> getObjects()
+    {
+        return objects;
     }
 }

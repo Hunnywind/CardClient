@@ -2,23 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CardTurnSort : IComparer<GameObject> {
+public class CardTurnSort : IComparer<GameObject>
+{
     public int Compare(GameObject obj1, GameObject obj2)
     {
         Card card1 = obj1.GetComponent<Card>();
         Card card2 = obj2.GetComponent<Card>();
 
-        if (card1.fieldNumber < card2.fieldNumber)
+        if (card1.FieldNumber < card2.FieldNumber)
             return -1;
-        else if (card1.fieldNumber > card2.fieldNumber)
+        else if (card1.FieldNumber > card2.FieldNumber)
             return 1;
-        else if (card1.cooltime < card2.cooltime)
+        else if (card1.Cardinfo.cooltime < card2.Cardinfo.cooltime)
             return -1;
-        else if (card1.cooltime > card2.cooltime)
+        else if (card1.Cardinfo.cooltime > card2.Cardinfo.cooltime)
             return 1;
-        else if (card1.mana > card2.mana)
+        else if (card1.Cardinfo.mana > card2.Cardinfo.mana)
             return -1;
-        else if (card1.mana < card2.mana)
+        else if (card1.Cardinfo.mana < card2.Cardinfo.mana)
             return 1;
         else
         {
