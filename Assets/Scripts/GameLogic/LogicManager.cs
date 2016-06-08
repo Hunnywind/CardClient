@@ -5,11 +5,16 @@ using UnityEngine.UI;
 using GameItem;
 using LogicStates;
 
-public class LogicManager : MonoBehaviour
+public partial class LogicManager : MonoBehaviour
 {
     public static LogicManager instance = null;
-    public float turnDelay = 2.0f;
+    
     public int presentTurn = 1;
+
+    [HideInInspector]
+    public Text manaText;
+    [HideInInspector]
+    public Button confirmButton;
 
     public GameObject[] fields;
     public GameObject[] enemyfields;
@@ -18,8 +23,7 @@ public class LogicManager : MonoBehaviour
     private Level presentlevel = Level.Init;
 
     private LogicStateMachine<LogicManager> stateMachine = new LogicStateMachine<LogicManager>();
-    private List<GameObject> turnEnableCards = new List<GameObject>();
-    private Text turnText;
+
 
     public Level PresentLevel
     {
@@ -29,24 +33,24 @@ public class LogicManager : MonoBehaviour
     {
         get { return player; }
     }
-    public List<GameObject> TurnEnableCards
-    {
-        get { return turnEnableCards; }
-    }
-    public Text TurnText
-    {
-        get { return turnText; }
-    }
+
+
     void Awake()
     {
         if (instance == null)
             instance = this;
         else if (instance != this)
             Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
+        turnText = GameObject.Find("TurnText").GetComponent<Text>();
+        manaText = GameObject.Find("LeftManaText").GetComponent<Text>();
+        confirmButton = GameObject.Find("ConfirmButton").GetComponent<Button>();
+
         PlayerSetting();
         FieldSetting();
         stateMachine.Init(instance, new SettingLogic());
@@ -56,15 +60,35 @@ public class LogicManager : MonoBehaviour
     {
         stateMachine.Update();
     }
+    public void LogicCoroutineStart(Level level)
+    {
+        switch (level)
+        {
+            case Level.Battle:
+                StartCoroutine(TurnStart());
+                break;
+            case Level.Return:
+                StartCoroutine(ReturnStart());
+                break;
+            case Level.Summon:
+                StartCoroutine(SummonStart());
+                break;
+        }
+    }
     public void SettingEnd()
     {
         switch (presentlevel)
         {
             case Level.Init:
                 stateMachine.ChangeState(new BattleLogic());
-                turnText = GameObject.Find("TurnText").GetComponent<Text>();
                 presentlevel = Level.Battle;
-                BattleStart();
+                break;
+            case Level.Return:
+                StartCoroutine(ReturnEnd());
+                break;
+            case Level.Summon:
+                stateMachine.ChangeState(new BattleLogic());
+                presentlevel = Level.Battle;
                 break;
         }
     }
@@ -74,7 +98,11 @@ public class LogicManager : MonoBehaviour
     }
     public void FieldColliderSet(int num, bool enable)
     {
-        fields[num-1].GetComponent<BoxCollider2D>().enabled = enable;
+        fields[num - 1].GetComponent<BoxCollider2D>().enabled = enable;
+    }
+    public void ChangeState(LogicState<LogicManager> state)
+    {
+        stateMachine.ChangeState(state);
     }
     private void PlayerSetting()
     {
@@ -97,6 +125,7 @@ public class LogicManager : MonoBehaviour
             enemyfields[i] = GameObject.Find("FieldPool").
                 GetComponent<ObjectPool>().GetObject();
             enemyfields[i].GetComponent<Field>().number = i + 1;
+            enemyfields[i].GetComponent<Field>().IsEnemyField = true;
 
             newPosition.x = ((-((float)fields[i].GetComponent<SpriteRenderer>().sprite.texture.width * 0.5f + blank * 0.5f) *
                     (fields.Length - 1)) +
@@ -111,33 +140,5 @@ public class LogicManager : MonoBehaviour
         }
     }
 
-    public void BattleStart()
-    {
-        StartCoroutine(TurnStart());
-    }
-    IEnumerator TurnStart()
-    {
-        turnText.gameObject.SetActive(true);
-        turnText.text = "Turn " + presentTurn;
-        yield return new WaitForSeconds(1f);
 
-        turnText.gameObject.SetActive(false);
-        player.mana++;
-        foreach(GameObject card in player.cards)
-        {
-            card.GetComponent<Card>().TurnStart();
-        }
-        turnEnableCards.Sort(new CardTurnSort());
-        Debug.Log("Sort Complete");
-        foreach (GameObject obj in turnEnableCards)
-        {
-            yield return new WaitForSeconds(turnDelay);
-            obj.GetComponent<Card>().AttackOrder = true;
-        }
-        yield return new WaitForSeconds(turnDelay);
-        presentTurn++;
-        turnEnableCards.Clear();
-        if (presentTurn < 7)
-            StartCoroutine(TurnStart());
-    }
 }

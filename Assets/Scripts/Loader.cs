@@ -7,11 +7,11 @@ public class Loader : MonoBehaviour
     public GameObject logicManager;
     void Awake()
     {
-        if(GameClient.instance == null)
+        if(GameClient.instance == null && gameClient != null)
         {
-            //Instantiate(gameClient);
+            Instantiate(gameClient);
         }
-        if(LogicManager.instance == null)
+        if(LogicManager.instance == null && logicManager != null)
         {
             Instantiate(logicManager);
         }

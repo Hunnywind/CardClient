@@ -44,7 +44,7 @@ namespace CardStates
 
             if (!hit)
                 moveToHand(entity);
-            else if (hit.transform.tag.Equals("Field"))
+            else if (hit.transform.tag.Equals("Field") && !hit.transform.gameObject.GetComponent<Field>().IsEnemyField)
                 moveToField(entity, hit);
             else if (hit)
                 moveToHand(entity);
@@ -67,10 +67,14 @@ namespace CardStates
         public override void exit(Card entity)
         {
             Debug.Log("Setting Exit");
-            
+            drag.AddComponent<Destroy>();
         }
         private void moveToField(Card entity, RaycastHit2D hit)
         {
+            if (entity.FieldNumber != 0)
+            {
+                LogicManager.instance.FieldColliderSet(entity.FieldNumber, true);
+            }
             entity.gameObject.transform.position = hit.transform.position;
             entity.FieldNumber = hit.transform.gameObject.GetComponent<Field>().number;
             LogicManager.instance.FieldColliderSet(entity.FieldNumber, false);
@@ -88,7 +92,6 @@ namespace CardStates
     }
     public class Battle : CardState<Card>
     {
-
         private Animator anim;
 
         public override void enter(Card entity)
@@ -105,21 +108,20 @@ namespace CardStates
                 entity.AttackOrder = false;
                 anim.SetTrigger("TriggerAttack");
             }
+            if (LogicManager.instance.PresentLevel == GameItem.Level.Return)
+                entity.ChangeState(new Return());
         }
         public override void mouseUp(Card entity)
         {
-            Debug.Log("Setting MouseUp");
         }
         public override void mouseDown(Card entity)
         {
-            Debug.Log("Setting MouseDown");
         }
         public override void mouseDrag(Card entity)
         {
         }
         public override void exit(Card entity)
         {
-            Debug.Log("Setting Exit");
         }
     }
     public class Hand : CardState<Card>
@@ -127,9 +129,15 @@ namespace CardStates
         public override void enter(Card entity)
         {
             Debug.Log("Hand enter");
+            LogicManager.instance.Player.AddCardHand(entity.gameObject);
+            entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         }
         public override void update(Card entity)
         {
+            if(LogicManager.instance.PresentLevel == GameItem.Level.Summon)
+            {
+                entity.ChangeState(new Setting());
+            }
         }
         public override void mouseUp(Card entity)
         {
@@ -145,6 +153,45 @@ namespace CardStates
         public override void exit(Card entity)
         {
             Debug.Log("Hand Exit");
+            LogicManager.instance.Player.RemoveCardHand(entity.gameObject);
+        }
+    }
+    public class Return : CardState<Card>
+    {
+        bool isclick;
+        public override void enter(Card entity)
+        {
+            isclick = false;
+        }
+        public override void update(Card entity)
+        {
+            if (!isclick)
+                entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            else
+                entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+
+            if (LogicManager.instance.PresentLevel == GameItem.Level.Return_End)
+                change(entity);
+        }
+        public override void mouseUp(Card entity)
+        {
+            
+        }
+        public override void mouseDown(Card entity)
+        {
+            if (isclick) isclick = false;
+            else isclick = true;
+        }
+        public override void mouseDrag(Card entity)
+        {
+        }
+        public override void exit(Card entity)
+        {
+        }
+        private void change(Card entity)
+        {
+            if (isclick) entity.ChangeState(new Hand());
+            else entity.ChangeState(new Battle());
         }
     }
 }

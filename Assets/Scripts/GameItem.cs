@@ -10,6 +10,7 @@ namespace GameItem
         Init,
         Battle,
         Return,
+        Return_End,
         Summon,
     }
 

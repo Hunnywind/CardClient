@@ -131,12 +131,12 @@ public partial class GameClient : MonoBehaviour
         };
 
         NetConnectionParam cp = new NetConnectionParam();
-        //cp.serverIP = "112.166.83.16";
-        //cp.clientAddrAtServer = "112.166.83.16";
-        cp.serverIP = m_serverAddr;
-        cp.clientAddrAtServer = m_serverAddr;
-        cp.serverPort = 15001;
-        cp.protocolVersion = new Nettention.Proud.Guid("{0x875d452,0xc512,0x4848,{0x98,0xd1,0xd4,0xf0,0xfa,0x86,0x69,0x11}}");
+        cp.serverIP = "127.0.0.1";
+        cp.clientAddrAtServer = "127.0.0.1";
+        //cp.serverIP = m_serverAddr;
+        //cp.clientAddrAtServer = m_serverAddr;
+        cp.serverPort = 15005;
+        cp.protocolVersion = new Nettention.Proud.Guid("{0x342e9077,0x4619,0x466f,{0xa9,0x34,0x1a,0x12,0x9f,0xde,0xa1,0xd}}");
 
         m_netClient.Connect(cp);
     }
