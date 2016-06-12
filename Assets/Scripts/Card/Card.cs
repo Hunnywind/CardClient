@@ -28,10 +28,13 @@ public class Card : MonoBehaviour
     {
         get { return cardinfo; }
     }
-    void Start()
+    void Awake()
     {
         gameObject.GetComponentInParent<ObjectPool>().AddObject(gameObject);
-        
+    }
+
+    void Start()
+    {
         cardinfo.mana = Random.Range(1, 7);
         cardinfo.cooltime = Random.Range(1, 7);
         cardinfo.leftcooltime = cardinfo.cooltime;

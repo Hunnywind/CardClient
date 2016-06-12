@@ -12,7 +12,6 @@ namespace CardStates
 
         public override void enter(Card entity)
         {
-            Debug.Log("Setting enter");
             initialPosition = entity.gameObject.transform.position;
 
             drag = new GameObject();
@@ -66,7 +65,7 @@ namespace CardStates
         }
         public override void exit(Card entity)
         {
-            Debug.Log("Setting Exit");
+
             drag.AddComponent<Destroy>();
         }
         private void moveToField(Card entity, RaycastHit2D hit)
@@ -96,7 +95,7 @@ namespace CardStates
 
         public override void enter(Card entity)
         {
-            Debug.Log("Battle enter");
+
             anim = entity.gameObject.GetComponentInChildren<Animator>();
             Debug.Log(entity.Cardinfo.cooltime);
         }
@@ -104,7 +103,6 @@ namespace CardStates
         {
             if(anim != null && entity.AttackOrder)
             {
-                Debug.Log("Attack!");
                 entity.AttackOrder = false;
                 anim.SetTrigger("TriggerAttack");
             }
@@ -128,7 +126,6 @@ namespace CardStates
     {
         public override void enter(Card entity)
         {
-            Debug.Log("Hand enter");
             LogicManager.instance.Player.AddCardHand(entity.gameObject);
             entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         }

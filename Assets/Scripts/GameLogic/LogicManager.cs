@@ -54,11 +54,36 @@ public partial class LogicManager : MonoBehaviour
         PlayerSetting();
         FieldSetting();
         stateMachine.Init(instance, new SettingLogic());
+        Debug.Log(Screen.height);
     }
 
     void Update()
     {
         stateMachine.Update();
+        Update_server();
+    }
+    void Update_server()
+    {
+        if(enemySettingEnd)
+        {
+            switch(presentlevel)
+            {
+                case Level.Init_Wait:
+                    stateMachine.ChangeState(new BattleLogic());
+                    presentlevel = Level.Battle;
+                    enemySettingEnd = false;
+                    break;
+                case Level.Return_Wait:
+                    enemySettingEnd = false;
+                    StartCoroutine(ReturnEnd());
+                    break;
+                case Level.Summon_Wait:
+                    enemySettingEnd = false;
+                    stateMachine.ChangeState(new BattleLogic());
+                    presentlevel = Level.Battle;
+                    break;
+            }
+        }
     }
     public void LogicCoroutineStart(Level level)
     {
@@ -80,15 +105,20 @@ public partial class LogicManager : MonoBehaviour
         switch (presentlevel)
         {
             case Level.Init:
-                stateMachine.ChangeState(new BattleLogic());
-                presentlevel = Level.Battle;
+                confirmButton.gameObject.SetActive(false);
+                presentlevel = Level.Init_Wait;
+                GameClient.instance.Ready();
                 break;
             case Level.Return:
-                StartCoroutine(ReturnEnd());
+                confirmButton.gameObject.SetActive(false);
+                presentlevel = Level.Return_Wait;
+                GameClient.instance.Ready();
                 break;
             case Level.Summon:
-                stateMachine.ChangeState(new BattleLogic());
-                presentlevel = Level.Battle;
+                confirmButton.gameObject.SetActive(false);
+                presentlevel = Level.Summon_Wait;
+                GameClient.instance.Ready();
+                
                 break;
         }
     }

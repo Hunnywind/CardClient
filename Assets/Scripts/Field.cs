@@ -12,7 +12,7 @@ public class Field : MonoBehaviour {
         set { isEnemyField = value; }
     }
 
-    public void Start()
+    public void Awake()
     {
         gameObject.GetComponentInParent<ObjectPool>().AddObject(gameObject);
         isEnemyField = false;

@@ -37,7 +37,6 @@ namespace LogicStates
         public override void exit(LogicManager entity)
         {
             entity.manaText.gameObject.SetActive(false);
-            entity.confirmButton.gameObject.SetActive(false);
         }
     }
     public class BattleLogic : LogicState<LogicManager>
@@ -80,8 +79,8 @@ namespace LogicStates
         {
             Debug.Log("Return Logic Start");
             Vector3 newPosition = new Vector3();
-            newPosition.x = (Screen.width * 1/2);
-            newPosition.y = (-Screen.height * 1/2 + entity.confirmButton.gameObject.GetComponent<RectTransform>().sizeDelta.y);
+            newPosition.x = (1280 * 1/2);
+            newPosition.y = (-720 * 1/2 + entity.confirmButton.gameObject.GetComponent<RectTransform>().sizeDelta.y);
             newPosition.z = 0;
             entity.confirmButton.gameObject.GetComponent<RectTransform>().anchoredPosition = newPosition;
 

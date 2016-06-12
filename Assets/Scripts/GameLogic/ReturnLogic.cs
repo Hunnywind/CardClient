@@ -19,7 +19,6 @@ public partial class LogicManager : MonoBehaviour
     {
         presentlevel = Level.Return_End;
         turnText.text = "Return End";
-        confirmButton.gameObject.SetActive(false);
         yield return new WaitForSeconds(3f);
         
         stateMachine.ChangeState(new SummonLogic());

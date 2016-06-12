@@ -41,9 +41,59 @@ CardClient.Marshaler.Write(__msg, isNewClient);
 	return RmiSend(remotes,rmiContext,__msg,
 		RmiName_RequestLogon, Common.RequestLogon);
 }
+public bool RequestClientCount(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+		__msg.SimplePacketMode = core.IsSimplePacketMode();
+		Nettention.Proud.RmiID __msgid= Common.RequestClientCount;
+		__msg.Write(__msgid);
+		
+	Nettention.Proud.HostID[] __list = new Nettention.Proud.HostID[1];
+	__list[0] = remote;
+		
+	return RmiSend(__list,rmiContext,__msg,
+		RmiName_RequestClientCount, Common.RequestClientCount);
+}
+
+public bool RequestClientCount(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+__msg.SimplePacketMode = core.IsSimplePacketMode();
+Nettention.Proud.RmiID __msgid= Common.RequestClientCount;
+__msg.Write(__msgid);
+		
+	return RmiSend(remotes,rmiContext,__msg,
+		RmiName_RequestClientCount, Common.RequestClientCount);
+}
+public bool RequestMaching(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+		__msg.SimplePacketMode = core.IsSimplePacketMode();
+		Nettention.Proud.RmiID __msgid= Common.RequestMaching;
+		__msg.Write(__msgid);
+		
+	Nettention.Proud.HostID[] __list = new Nettention.Proud.HostID[1];
+	__list[0] = remote;
+		
+	return RmiSend(__list,rmiContext,__msg,
+		RmiName_RequestMaching, Common.RequestMaching);
+}
+
+public bool RequestMaching(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+__msg.SimplePacketMode = core.IsSimplePacketMode();
+Nettention.Proud.RmiID __msgid= Common.RequestMaching;
+__msg.Write(__msgid);
+		
+	return RmiSend(remotes,rmiContext,__msg,
+		RmiName_RequestMaching, Common.RequestMaching);
+}
 // RMI name declaration.
 // It is the unique pointer that indicates RMI name such as RMI profiler.
 const string RmiName_RequestLogon="RequestLogon";
+const string RmiName_RequestClientCount="RequestClientCount";
+const string RmiName_RequestMaching="RequestMaching";
        
 const string RmiName_First = RmiName_RequestLogon;
 		public override Nettention.Proud.RmiID[] GetRmiIDList() { return Common.RmiIDList; } 

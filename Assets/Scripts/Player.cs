@@ -27,9 +27,9 @@ public class Player : MonoBehaviour {
                    (cards_hand.Count - 1)) +
                    (((float)cards_hand[i].GetComponentInChildren<SpriteRenderer>().sprite.texture.width + blank) * i))
                    * 1 / 100;
-            newPosition.y = -Screen.height * 1 / 100;
+            newPosition.y = -5;
             newPosition.z = 0;
-
+            
             cards_hand[i].transform.position = newPosition;
         }
     }

@@ -8,17 +8,23 @@ namespace GameItem
     public enum Level
     {
         Init,
+        Init_Wait,
         Battle,
         Return,
+        Return_Wait,
         Return_End,
         Summon,
+        Summon_Wait,
     }
 
-    enum State
+    public enum State
     {
-        Setting,
-        Hand,
-        Field,
+        Stanby,
+        Conneting,
+        LoggingOn,
+        MachingWait,
+        MachingComplete,
+        Failed,
     }
 
     public struct CardInfo

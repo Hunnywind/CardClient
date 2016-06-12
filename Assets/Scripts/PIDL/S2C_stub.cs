@@ -16,8 +16,18 @@ namespace S2C
 public AfterRmiInvocationDelegate AfterRmiInvocation = delegate(Nettention.Proud.AfterRmiSummary summary) {};
 public BeforeRmiInvocationDelegate BeforeRmiInvocation = delegate(Nettention.Proud.BeforeRmiSummary summary) {};
 
-		public delegate bool ReplyLogonDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int groupID, int result, String comment);  
-		public ReplyLogonDelegate ReplyLogon = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int groupID, int result, String comment)
+		public delegate bool ReplyLogonDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int clientID);  
+		public ReplyLogonDelegate ReplyLogon = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int clientID)
+		{ 
+			return false;
+		};
+		public delegate bool ReplyClientCountDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int clientCount);  
+		public ReplyClientCountDelegate ReplyClientCount = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int clientCount)
+		{ 
+			return false;
+		};
+		public delegate bool MachingCompleteDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext);  
+		public MachingCompleteDelegate MachingComplete = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
 		{ 
 			return false;
 		};
@@ -46,16 +56,12 @@ case Common.ReplyLogon:
 		ctx.encryptMode = pa.EncryptMode;
 		ctx.compressMode = pa.CompressMode;
 			
-		int groupID; CardClient.Marshaler.Read(__msg,out groupID);	
-int result; CardClient.Marshaler.Read(__msg,out result);	
-String comment; CardClient.Marshaler.Read(__msg,out comment);	
+		int clientID; CardClient.Marshaler.Read(__msg,out clientID);	
 core.PostCheckReadMessage(__msg, RmiName_ReplyLogon);
 		if(enableNotifyCallFromStub==true)
 		{
 			string parameterString="";
-			parameterString+=groupID.ToString()+",";
-parameterString+=result.ToString()+",";
-parameterString+=comment.ToString()+",";
+			parameterString+=clientID.ToString()+",";
 			NotifyCallFromStub(Common.ReplyLogon, RmiName_ReplyLogon,parameterString);
 		}
 			
@@ -72,7 +78,7 @@ parameterString+=comment.ToString()+",";
 		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
 			
 		// Call this method.
-		bool __ret=ReplyLogon (remote,ctx , groupID, result, comment );
+		bool __ret=ReplyLogon (remote,ctx , clientID );
 			
 		if(__ret==false)
 		{
@@ -85,6 +91,106 @@ parameterString+=comment.ToString()+",";
 			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
 			summary.rmiID = Common.ReplyLogon;
 			summary.rmiName = RmiName_ReplyLogon;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.ReplyClientCount:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		int clientCount; CardClient.Marshaler.Read(__msg,out clientCount);	
+core.PostCheckReadMessage(__msg, RmiName_ReplyClientCount);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=clientCount.ToString()+",";
+			NotifyCallFromStub(Common.ReplyClientCount, RmiName_ReplyClientCount,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.ReplyClientCount;
+			summary.rmiName = RmiName_ReplyClientCount;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=ReplyClientCount (remote,ctx , clientCount );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_ReplyClientCount);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.ReplyClientCount;
+			summary.rmiName = RmiName_ReplyClientCount;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.MachingComplete:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		core.PostCheckReadMessage(__msg, RmiName_MachingComplete);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+						NotifyCallFromStub(Common.MachingComplete, RmiName_MachingComplete,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.MachingComplete;
+			summary.rmiName = RmiName_MachingComplete;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=MachingComplete (remote,ctx  );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_MachingComplete);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.MachingComplete;
+			summary.rmiName = RmiName_MachingComplete;
 			summary.hostID = remote;
 			summary.hostTag = hostTag;
 			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
@@ -105,6 +211,8 @@ __fail:
 // RMI name declaration.
 // It is the unique pointer that indicates RMI name such as RMI profiler.
 const string RmiName_ReplyLogon="ReplyLogon";
+const string RmiName_ReplyClientCount="ReplyClientCount";
+const string RmiName_MachingComplete="MachingComplete";
        
 const string RmiName_First = RmiName_ReplyLogon;
 		public override Nettention.Proud.RmiID[] GetRmiIDList { get{return Common.RmiIDList;} }

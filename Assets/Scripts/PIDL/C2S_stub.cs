@@ -21,6 +21,16 @@ public BeforeRmiInvocationDelegate BeforeRmiInvocation = delegate(Nettention.Pro
 		{ 
 			return false;
 		};
+		public delegate bool RequestClientCountDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext);  
+		public RequestClientCountDelegate RequestClientCount = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+		{ 
+			return false;
+		};
+		public delegate bool RequestMachingDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext);  
+		public RequestMachingDelegate RequestMaching = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+		{ 
+			return false;
+		};
 	public override bool ProcessReceivedMessage(Nettention.Proud.ReceivedMessage pa, Object hostTag) 
 	{
 		Nettention.Proud.HostID remote=pa.RemoteHostID;
@@ -90,6 +100,104 @@ parameterString+=isNewClient.ToString()+",";
 		}
 	}
 	break;
+case Common.RequestClientCount:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		core.PostCheckReadMessage(__msg, RmiName_RequestClientCount);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+						NotifyCallFromStub(Common.RequestClientCount, RmiName_RequestClientCount,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.RequestClientCount;
+			summary.rmiName = RmiName_RequestClientCount;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=RequestClientCount (remote,ctx  );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_RequestClientCount);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.RequestClientCount;
+			summary.rmiName = RmiName_RequestClientCount;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.RequestMaching:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		core.PostCheckReadMessage(__msg, RmiName_RequestMaching);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+						NotifyCallFromStub(Common.RequestMaching, RmiName_RequestMaching,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.RequestMaching;
+			summary.rmiName = RmiName_RequestMaching;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=RequestMaching (remote,ctx  );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_RequestMaching);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.RequestMaching;
+			summary.rmiName = RmiName_RequestMaching;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
 		default:
 			 goto __fail;
 		}
@@ -103,6 +211,8 @@ __fail:
 // RMI name declaration.
 // It is the unique pointer that indicates RMI name such as RMI profiler.
 const string RmiName_RequestLogon="RequestLogon";
+const string RmiName_RequestClientCount="RequestClientCount";
+const string RmiName_RequestMaching="RequestMaching";
        
 const string RmiName_First = RmiName_RequestLogon;
 		public override Nettention.Proud.RmiID[] GetRmiIDList { get{return Common.RmiIDList;} }

@@ -2,7 +2,8 @@
 using System.Collections;
 using Nettention.Proud;
 using System;
-using UnityEngine.SceneManagement;
+
+using GameItem;
 
 public partial class GameClient : MonoBehaviour
 {
@@ -18,17 +19,16 @@ public partial class GameClient : MonoBehaviour
 
     C2S.Proxy m_C2SProxy = new C2S.Proxy();
     S2C.Stub m_S2CStub = new S2C.Stub();
+    C2C.Proxy m_C2CProxy = new C2C.Proxy();
+    C2C.Stub m_C2CStub = new C2C.Stub();
 
-    enum State
-    {
-        Stanby,
-        Conneting,
-        LoggingOn,
-        InGroup,
-        Failed,
-    }
+    HostID m_myhostID = HostID.HostID_None;
+
     State m_state = State.Stanby;
-
+    public State GetState
+    {
+        get { return m_state; }
+    }
     void Awake()
     {
         if (instance == null)
@@ -42,20 +42,22 @@ public partial class GameClient : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        m_S2CStub.ReplyLogon = (Nettention.Proud.HostID remote, Nettention.Proud.RmiContext rmiContext, int groupID, int result, String comment) =>
+        m_netClient.P2PMemberJoinHandler = (HostID memberHostID, HostID groupHostID, int memberCount, ByteArray customField) =>
         {
-            m_myP2PGroupID = (HostID)groupID;
-
-            if (result == 0) // ok
-            {
-                m_state = State.InGroup;
-            }
-            else
-            {
-                m_state = State.Failed;
-                m_failMessage = "Logon failed Error" + comment;
-            }
-            //Start_InVilleRmiStub();
+            m_myP2PGroupID = groupHostID;
+            
+            ServerRoom.instance.MachingComplete();
+            m_state = State.MachingComplete;
+        };
+        m_S2CStub.ReplyLogon = (Nettention.Proud.HostID remote, Nettention.Proud.RmiContext rmiContext, int clientID) =>
+        {
+            m_myhostID = (HostID)clientID;
+            SetP2PRmiStub();
+            return true;
+        };
+        m_S2CStub.ReplyClientCount = (Nettention.Proud.HostID remote, Nettention.Proud.RmiContext rmiContext, int clientCount) =>
+        {
+            ServerRoom.instance.ClientCount = clientCount;
             return true;
         };
     }
@@ -65,48 +67,27 @@ public partial class GameClient : MonoBehaviour
     {
         m_netClient.FrameMove();
     }
-
-    public void OnGUI()
+    
+    public void Connect()
     {
-        switch (m_state)
+        if (m_state == State.Stanby)
         {
-            case State.Stanby:
-            case State.Conneting:
-            case State.LoggingOn:
-                OnGUI_Logon();
-                break;
-            case State.InGroup:
-            case State.Failed:
-                GUI.Label(new Rect(10, 30, 200, 80), m_failMessage);
-                if (GUI.Button(new Rect(10, 100, 180, 30), "Quit"))
-                {
-                    Application.Quit();
-                }
-                break;
+            m_state = State.Conneting;
+            IssueConnect();
+        }
+        if (m_state == State.LoggingOn)
+        {
+            m_state = State.MachingWait;
+            MachingRequest();
         }
     }
-    private void OnGUI_Logon()
-    {
-        GUI.Label(new Rect(10, 10, 300, 70), "Dual Manager");
-        GUI.Label(new Rect(10, 60, 180, 30), "Server Address");
-        m_serverAddr = GUI.TextField(new Rect(10, 80, 180, 30), m_serverAddr);
-        GUI.Label(new Rect(10, 110, 180, 30), "Group Name");
-        m_groupName = GUI.TextField(new Rect(10, 130, 180, 30), m_groupName);
 
-        if (GUI.Button(new Rect(10, 190, 100, 30), m_loginButtonText))
-        {
-            if (m_state == State.Stanby)
-            {
-                m_state = State.Conneting;
-                m_loginButtonText = "Connecting...";
-                IssueConnect();
-            }
-        }
-    }
     private void IssueConnect()
     {
         m_netClient.AttachProxy(m_C2SProxy);
         m_netClient.AttachStub(m_S2CStub);
+        m_netClient.AttachProxy(m_C2CProxy);
+        m_netClient.AttachStub(m_C2CStub);
 
         m_netClient.JoinServerCompleteHandler = (ErrorInfo info, ByteArray replyFromServer) =>
         {
@@ -114,8 +95,10 @@ public partial class GameClient : MonoBehaviour
             {
                 m_state = State.LoggingOn;
                 m_loginButtonText = "Logging On...";
+                ServerRoom.instance.ServerJoinComplete();
                 m_C2SProxy.RequestLogon(HostID.HostID_Server, RmiContext.ReliableSend, m_groupName, false);
-                SceneManager.LoadScene("GamePlay");
+                m_C2SProxy.RequestClientCount(HostID.HostID_Server, RmiContext.ReliableSend);
+                
             }
             else
             {
@@ -129,6 +112,7 @@ public partial class GameClient : MonoBehaviour
             m_state = State.Failed;
             m_failMessage = "Disconnected from server: " + info.ToString();
         };
+        
 
         NetConnectionParam cp = new NetConnectionParam();
         cp.serverIP = "127.0.0.1";
@@ -140,7 +124,10 @@ public partial class GameClient : MonoBehaviour
 
         m_netClient.Connect(cp);
     }
-
+    private void MachingRequest()
+    {
+        m_C2SProxy.RequestMaching(HostID.HostID_Server, RmiContext.ReliableSend);
+    }
     public void OnDestroy()
     {
         m_netClient.Dispose();

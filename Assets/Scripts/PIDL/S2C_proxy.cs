@@ -13,15 +13,13 @@ namespace S2C
 {
 	internal class Proxy:Nettention.Proud.RmiProxy
 	{
-public bool ReplyLogon(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int groupID, int result, String comment)
+public bool ReplyLogon(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int clientID)
 {
 	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
 		__msg.SimplePacketMode = core.IsSimplePacketMode();
 		Nettention.Proud.RmiID __msgid= Common.ReplyLogon;
 		__msg.Write(__msgid);
-		CardClient.Marshaler.Write(__msg, groupID);
-		CardClient.Marshaler.Write(__msg, result);
-		CardClient.Marshaler.Write(__msg, comment);
+		CardClient.Marshaler.Write(__msg, clientID);
 		
 	Nettention.Proud.HostID[] __list = new Nettention.Proud.HostID[1];
 	__list[0] = remote;
@@ -30,22 +28,72 @@ public bool ReplyLogon(Nettention.Proud.HostID remote,Nettention.Proud.RmiContex
 		RmiName_ReplyLogon, Common.ReplyLogon);
 }
 
-public bool ReplyLogon(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext, int groupID, int result, String comment)
+public bool ReplyLogon(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext, int clientID)
 {
 	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
 __msg.SimplePacketMode = core.IsSimplePacketMode();
 Nettention.Proud.RmiID __msgid= Common.ReplyLogon;
 __msg.Write(__msgid);
-CardClient.Marshaler.Write(__msg, groupID);
-CardClient.Marshaler.Write(__msg, result);
-CardClient.Marshaler.Write(__msg, comment);
+CardClient.Marshaler.Write(__msg, clientID);
 		
 	return RmiSend(remotes,rmiContext,__msg,
 		RmiName_ReplyLogon, Common.ReplyLogon);
 }
+public bool ReplyClientCount(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int clientCount)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+		__msg.SimplePacketMode = core.IsSimplePacketMode();
+		Nettention.Proud.RmiID __msgid= Common.ReplyClientCount;
+		__msg.Write(__msgid);
+		CardClient.Marshaler.Write(__msg, clientCount);
+		
+	Nettention.Proud.HostID[] __list = new Nettention.Proud.HostID[1];
+	__list[0] = remote;
+		
+	return RmiSend(__list,rmiContext,__msg,
+		RmiName_ReplyClientCount, Common.ReplyClientCount);
+}
+
+public bool ReplyClientCount(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext, int clientCount)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+__msg.SimplePacketMode = core.IsSimplePacketMode();
+Nettention.Proud.RmiID __msgid= Common.ReplyClientCount;
+__msg.Write(__msgid);
+CardClient.Marshaler.Write(__msg, clientCount);
+		
+	return RmiSend(remotes,rmiContext,__msg,
+		RmiName_ReplyClientCount, Common.ReplyClientCount);
+}
+public bool MachingComplete(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+		__msg.SimplePacketMode = core.IsSimplePacketMode();
+		Nettention.Proud.RmiID __msgid= Common.MachingComplete;
+		__msg.Write(__msgid);
+		
+	Nettention.Proud.HostID[] __list = new Nettention.Proud.HostID[1];
+	__list[0] = remote;
+		
+	return RmiSend(__list,rmiContext,__msg,
+		RmiName_MachingComplete, Common.MachingComplete);
+}
+
+public bool MachingComplete(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+__msg.SimplePacketMode = core.IsSimplePacketMode();
+Nettention.Proud.RmiID __msgid= Common.MachingComplete;
+__msg.Write(__msgid);
+		
+	return RmiSend(remotes,rmiContext,__msg,
+		RmiName_MachingComplete, Common.MachingComplete);
+}
 // RMI name declaration.
 // It is the unique pointer that indicates RMI name such as RMI profiler.
 const string RmiName_ReplyLogon="ReplyLogon";
+const string RmiName_ReplyClientCount="ReplyClientCount";
+const string RmiName_MachingComplete="MachingComplete";
        
 const string RmiName_First = RmiName_ReplyLogon;
 		public override Nettention.Proud.RmiID[] GetRmiIDList() { return Common.RmiIDList; } 
