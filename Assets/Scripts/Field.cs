@@ -14,7 +14,6 @@ public class Field : MonoBehaviour {
 
     public void Awake()
     {
-        gameObject.GetComponentInParent<ObjectPool>().AddObject(gameObject);
         isEnemyField = false;
     }
     public void AddField(Card _card)

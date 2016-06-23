@@ -19,7 +19,7 @@ namespace CardStates
             drag.gameObject.transform.position = entity.gameObject.transform.position;
             drag.GetComponent<SpriteRenderer>().sprite = entity.gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
             drag.GetComponent<SpriteRenderer>().enabled = false;
-
+            drag.GetComponent<SpriteRenderer>().sortingOrder = 5;
             render = entity.gameObject.GetComponentInChildren<SpriteRenderer>();
             drag_render = drag.GetComponent<SpriteRenderer>();
         }
@@ -52,7 +52,7 @@ namespace CardStates
         {
             Debug.Log("Setting MouseDown");
             if(entity.FieldNumber == 0)
-                LogicManager.instance.Player.mana -= entity.Cardinfo.mana;
+                LogicManager.instance.Player.SubtractMana(entity.Cardinfo.mana);
         }
         public override void mouseDrag(Card entity)
         {
@@ -80,7 +80,7 @@ namespace CardStates
         }
         private void moveToHand(Card entity)
         {
-            LogicManager.instance.Player.mana += entity.Cardinfo.mana;
+            LogicManager.instance.Player.AddMana(entity.Cardinfo.mana);
             entity.gameObject.transform.position = initialPosition;
             if(entity.FieldNumber != 0)
             {
@@ -95,7 +95,6 @@ namespace CardStates
 
         public override void enter(Card entity)
         {
-
             anim = entity.gameObject.GetComponentInChildren<Animator>();
             Debug.Log(entity.Cardinfo.cooltime);
         }
@@ -126,12 +125,16 @@ namespace CardStates
     {
         public override void enter(Card entity)
         {
-            LogicManager.instance.Player.AddCardHand(entity.gameObject);
+            if (!entity.IsEnemyCard)
+            {
+                LogicManager.instance.Player.AddCardHand(entity.gameObject);
+            }
             entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         }
         public override void update(Card entity)
         {
-            if(LogicManager.instance.PresentLevel == GameItem.Level.Summon)
+            if(LogicManager.instance.PresentLevel == GameItem.Level.Summon
+                && !entity.IsEnemyCard)
             {
                 entity.ChangeState(new Setting());
             }
@@ -150,6 +153,7 @@ namespace CardStates
         public override void exit(Card entity)
         {
             Debug.Log("Hand Exit");
+            if(!entity.IsEnemyCard)
             LogicManager.instance.Player.RemoveCardHand(entity.gameObject);
         }
     }
@@ -162,11 +166,13 @@ namespace CardStates
         }
         public override void update(Card entity)
         {
-            if (!isclick)
-                entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-            else
-                entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
-
+            if (!entity.IsEnemyCard)
+            {
+                if (!isclick)
+                    entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                else
+                    entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+            }
             if (LogicManager.instance.PresentLevel == GameItem.Level.Return_End)
                 change(entity);
         }
@@ -187,8 +193,11 @@ namespace CardStates
         }
         private void change(Card entity)
         {
-            if (isclick) entity.ChangeState(new Hand());
-            else entity.ChangeState(new Battle());
+            if (!entity.IsEnemyCard)
+            {
+                if (isclick) entity.ChangeState(new Hand());
+                else entity.ChangeState(new Battle());
+            }
         }
     }
 }

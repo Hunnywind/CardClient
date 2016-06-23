@@ -28,7 +28,12 @@ public partial class LogicManager : MonoBehaviour
 
         turnText.gameObject.SetActive(false);
         player.mana++;
+        
         foreach (GameObject card in player.cards)
+        {
+            card.GetComponent<Card>().TurnStart();
+        }
+        foreach (GameObject card in enemy.cards)
         {
             card.GetComponent<Card>().TurnStart();
         }

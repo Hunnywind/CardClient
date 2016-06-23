@@ -8,14 +8,19 @@ public class Player : MonoBehaviour {
     public int mana;
 
     [HideInInspector]
-    public List<GameObject> cards;
-    
-    public List<GameObject> cards_hand;
+    public List<GameObject> cards = new List<GameObject>();
+    public List<GameObject> cards_hand = new List<GameObject>();
 
+    private List<GameObject> manaObjects = new List<GameObject>();
+    private ObjectPool objpool;
     void Awake()
     {
-        cards = new List<GameObject>();
-        cards_hand = new List<GameObject>();
+    }
+    void Start()
+    {
+        objpool = GameObject.Find("ManaPool").GetComponent<ObjectPool>();
+        objpool.Init();
+        AddMana(5);
     }
     void Update()
     {
@@ -31,6 +36,30 @@ public class Player : MonoBehaviour {
             newPosition.z = 0;
             
             cards_hand[i].transform.position = newPosition;
+        }
+        for(int i = 0; i < manaObjects.Count; i++)
+        {
+            newPosition.x = 8.48f;
+            newPosition.y = -3.5f + i * 0.45f;
+            newPosition.z = 0;
+            manaObjects[i].transform.position = newPosition;
+        }
+    }
+    public void AddMana(int _mana)
+    {
+        mana += _mana;
+        for(int i = 0; i < _mana; i++)
+        {
+            manaObjects.Add(objpool.GetObject());
+        }
+    }
+    public void SubtractMana(int _mana)
+    {
+        mana -= _mana;
+        for (int i = 0; i < _mana; i++)
+        {
+            manaObjects[manaObjects.Count - 1].SetActive(false);
+            manaObjects.RemoveAt(manaObjects.Count - 1);
         }
     }
     public void CardManaCheck()
@@ -63,5 +92,15 @@ public class Player : MonoBehaviour {
     {
         cards_hand.Remove(card);
     }
-
+    public void SendInfo()
+    {
+        for(int i = 0; i < cards.Count; i++)
+        {
+            cards[i].GetComponent<Card>().InfoSend();
+        }
+        for(int i = 0; i < cards_hand.Count; i++)
+        {
+            cards_hand[i].GetComponent<Card>().InfoSend();
+        }
+    }
 }

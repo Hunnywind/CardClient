@@ -7,7 +7,8 @@
 // Do not modify this file, but modify the source .pidl file.
 
 using System;
-using System.Net;	     
+using System.Net;
+using GameItem;
 
 namespace C2C
 {
@@ -18,6 +19,16 @@ public BeforeRmiInvocationDelegate BeforeRmiInvocation = delegate(Nettention.Pro
 
 		public delegate bool SettingOKDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext);  
 		public SettingOKDelegate SettingOK = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+		{ 
+			return false;
+		};
+		public delegate bool CardInfoDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, CardInfo_send info);  
+		public CardInfoDelegate CardInfo = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, CardInfo_send info)
+		{ 
+			return false;
+		};
+		public delegate bool ClearInfoDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext);  
+		public ClearInfoDelegate ClearInfo = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
 		{ 
 			return false;
 		};
@@ -86,6 +97,106 @@ case Common.SettingOK:
 		}
 	}
 	break;
+case Common.CardInfo:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		CardInfo_send info; CardClient.Marshaler.Read(__msg,out info);	
+core.PostCheckReadMessage(__msg, RmiName_CardInfo);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=info.ToString()+",";
+			NotifyCallFromStub(Common.CardInfo, RmiName_CardInfo,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.CardInfo;
+			summary.rmiName = RmiName_CardInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=CardInfo (remote,ctx , info );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_CardInfo);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.CardInfo;
+			summary.rmiName = RmiName_CardInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.ClearInfo:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		core.PostCheckReadMessage(__msg, RmiName_ClearInfo);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+						NotifyCallFromStub(Common.ClearInfo, RmiName_ClearInfo,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.ClearInfo;
+			summary.rmiName = RmiName_ClearInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=ClearInfo (remote,ctx  );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_ClearInfo);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.ClearInfo;
+			summary.rmiName = RmiName_ClearInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
 		default:
 			 goto __fail;
 		}
@@ -99,6 +210,8 @@ __fail:
 // RMI name declaration.
 // It is the unique pointer that indicates RMI name such as RMI profiler.
 const string RmiName_SettingOK="SettingOK";
+const string RmiName_CardInfo="CardInfo";
+const string RmiName_ClearInfo="ClearInfo";
        
 const string RmiName_First = RmiName_SettingOK;
 		public override Nettention.Proud.RmiID[] GetRmiIDList { get{return Common.RmiIDList;} }

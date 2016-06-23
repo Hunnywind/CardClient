@@ -1,0 +1,72 @@
+ C 드라이브의 볼륨에는 이름이 없습니다.
+ 볼륨 일련 번호: 6C70-BC26
+
+ C:\Users\Administrator\Documents\CardClient\Assets 디렉터리
+
+2016-06-23  오후 09:46               226 Fields.cs
+2016-06-16  오후 03:00               201 Mana.cs
+               2개 파일                 427 바이트
+
+ C:\Users\Administrator\Documents\CardClient\Assets\Scripts 디렉터리
+
+2016-06-08  오후 05:30               154 Destroy.cs
+2016-06-16  오전 09:13             2,592 Enemy.cs
+2016-06-16  오후 03:03               540 Field.cs
+2016-06-16  오전 04:51             1,228 GameItem.cs
+2016-06-09  오전 12:59               614 Loader.cs
+2016-05-22  오후 06:56               901 ObjectPool.cs
+2016-06-16  오후 02:29             3,286 Player.cs
+               7개 파일               9,315 바이트
+
+ C:\Users\Administrator\Documents\CardClient\Assets\Scripts\Card 디렉터리
+
+2016-06-16  오전 09:17             2,680 Card.cs
+2016-05-28  오후 05:39               634 CardData.cs
+2016-05-28  오후 06:59               419 CardState.cs
+2016-05-28  오후 03:19             1,183 CardStateMachine.cs
+2016-06-16  오후 02:32             7,028 CardStates.cs
+               5개 파일              11,944 바이트
+
+ C:\Users\Administrator\Documents\CardClient\Assets\Scripts\GameLogic 디렉터리
+
+2016-06-16  오전 08:51             1,457 BattleLogic.cs
+2016-05-28  오후 10:30               992 CardTurnSort.cs
+2016-06-16  오후 03:03             5,165 LogicManager.cs
+2016-05-28  오후 07:41               283 LogicState.cs
+2016-05-28  오후 07:03               922 LogicStateMachine.cs
+2016-06-16  오후 03:20             5,005 LogicStates.cs
+2016-06-12  오후 07:48               703 ReturnLogic.cs
+2016-06-16  오전 09:48               423 SummonLogic.cs
+2016-06-12  오후 07:55               410 WaitLogic.cs
+               9개 파일              15,360 바이트
+
+ C:\Users\Administrator\Documents\CardClient\Assets\Scripts\PIDL 디렉터리
+
+2016-06-16  오전 04:35               655 C2C_common.cs
+2016-06-16  오전 04:36             3,337 C2C_proxy.cs
+2016-06-16  오전 04:36             6,878 C2C_stub.cs
+2016-06-12  오후 08:10               691 C2S_common.cs
+2016-06-12  오후 08:10             3,645 C2S_proxy.cs
+2016-06-12  오후 08:10             7,314 C2S_stub.cs
+2016-06-12  오후 08:10               685 S2C_common.cs
+2016-06-12  오후 08:10             3,601 S2C_proxy.cs
+2016-06-12  오후 08:10             7,249 S2C_stub.cs
+               9개 파일              34,055 바이트
+
+ C:\Users\Administrator\Documents\CardClient\Assets\Scripts\Server 디렉터리
+
+2016-06-12  오후 08:13             4,083 GameClient.cs
+2016-06-16  오전 05:05             1,454 InGroup.cs
+2016-06-16  오전 04:12             1,076 Marshaler.cs
+2016-06-09  오후 05:46             1,514 ServerRoom.cs
+               4개 파일               8,127 바이트
+
+ C:\Users\Administrator\Documents\CardClient\Assets\Scripts\UI 디렉터리
+
+2016-05-18  오후 08:50               189 ConfirmButton.cs
+2016-06-09  오전 01:28               185 ConnectButton.cs
+               2개 파일                 374 바이트
+
+     전체 파일:
+              38개 파일              79,602 바이트
+               0개 디렉터리  12,311,412,736 바이트 남음

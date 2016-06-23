@@ -9,6 +9,8 @@ public class Card : MonoBehaviour
     private int fieldNumber = 0;
     private CardInfo cardinfo;
     private bool attackOrder;
+    private CardInfo_send info;
+    private bool isEnemyCard = false;
 
     public bool AttackOrder
     {
@@ -28,6 +30,11 @@ public class Card : MonoBehaviour
     {
         get { return cardinfo; }
     }
+    public bool IsEnemyCard
+    {
+        get { return isEnemyCard; }
+    }
+
     void Awake()
     {
         gameObject.GetComponentInParent<ObjectPool>().AddObject(gameObject);
@@ -75,5 +82,29 @@ public class Card : MonoBehaviour
             cardinfo.leftcooltime = cardinfo.cooltime;
             LogicManager.instance.CardAdd(gameObject);
         }
+    }
+    public void InfoSend()
+    {
+        if (fieldNumber == 0)
+        {
+            info.cardLocation = (int)CardLocation.HAND;
+        }
+        else
+        {
+            info.cardLocation = (int)CardLocation.FIELD;
+            info.FieldLocation = fieldNumber;
+        }
+        info.cooltime = cardinfo.cooltime;
+        info.leftcooltime = cardinfo.leftcooltime;
+        GameClient.instance.SendCardInfo(info);
+    }
+    public void SetInfo(CardInfo_send pinfo)
+    {
+        isEnemyCard = true;
+        info = pinfo;
+        cardinfo.leftcooltime = info.leftcooltime;
+        cardinfo.mana = info.mana;
+        cardinfo.cooltime = info.cooltime;
+        fieldNumber = info.FieldLocation;
     }
 }

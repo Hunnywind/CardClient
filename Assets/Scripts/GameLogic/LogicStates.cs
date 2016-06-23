@@ -8,8 +8,15 @@ namespace LogicStates
 {
     public class SettingLogic : LogicState<LogicManager>
     {
+        GameObject background;
+        GameObject background_setting;
+
         public override void enter(LogicManager entity)
         {
+            background = GameObject.Find("Background");
+            background_setting = GameObject.Find("Background_setting");
+
+            background.SetActive(false);
             entity.TurnText.gameObject.SetActive(false);
             ObjectPool objpool = GameObject.Find("CardPool").GetComponent<ObjectPool>();
             objpool.Init();
@@ -18,11 +25,12 @@ namespace LogicStates
             for (int i = 0; i < entity.Player.cardNum; i++)
             {
                 GameObject card = objpool.GetObject();
-                newPosition.x = ((-((float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.width * 0.5f + blank * 0.5f) *
+                newPosition.x = ((-((float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.width * 0.5f + blank * 0.5f - 2f) *
                     (entity.Player.cardNum - 1)) +
                     (((float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.width + blank)* i))
-                    * 1 / 100;
-                newPosition.y = -(float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.height * 1 / 100;
+                    * 1 / 150;
+                newPosition.y = -(float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.height * 1 / 200;
+                    
                 newPosition.z = 0;
                 card.transform.position = newPosition;
                 card.GetComponent<Card>().Init();
@@ -31,12 +39,21 @@ namespace LogicStates
         }
         public override void update(LogicManager entity)
         {
-            entity.manaText.text = "Left Mana : " + entity.Player.mana;
+            entity.manaText.text = "";
             entity.Player.CardManaCheck();
         }
         public override void exit(LogicManager entity)
         {
+            background.SetActive(true);
+            background_setting.SetActive(false);
             entity.manaText.gameObject.SetActive(false);
+
+            Vector3 newPosition = new Vector3();
+            newPosition.x = 0;
+            newPosition.y = 0;
+            newPosition.z = 0;
+            entity.PlayerFields.transform.position = newPosition;
+            entity.EnemyFields.SetActive(true);
         }
     }
     public class BattleLogic : LogicState<LogicManager>
@@ -58,6 +75,7 @@ namespace LogicStates
                 entity.enemyfields[i].transform.position = newPosition;
             }
             entity.Player.CardArrange();
+            entity.Enemy.CardArrange();
             entity.LogicCoroutineStart(Level.Battle);
         }
         public override void update(LogicManager entity)

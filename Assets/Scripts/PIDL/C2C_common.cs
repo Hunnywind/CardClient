@@ -14,9 +14,13 @@ namespace C2C
 	{
 		// Message ID that replies to each RMI method. 
 			public const Nettention.Proud.RmiID SettingOK = (Nettention.Proud.RmiID)5000+1;
+			public const Nettention.Proud.RmiID CardInfo = (Nettention.Proud.RmiID)5000+2;
+			public const Nettention.Proud.RmiID ClearInfo = (Nettention.Proud.RmiID)5000+3;
 		// List that has RMI ID.
 		public static Nettention.Proud.RmiID[] RmiIDList = new Nettention.Proud.RmiID[] {
 			SettingOK,
+			CardInfo,
+			ClearInfo,
 		};
 	}
 }

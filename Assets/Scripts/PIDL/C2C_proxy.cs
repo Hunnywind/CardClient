@@ -8,6 +8,7 @@
 
 using System;
 using System.Net;
+using GameItem;
 
 namespace C2C
 {
@@ -37,9 +38,61 @@ __msg.Write(__msgid);
 	return RmiSend(remotes,rmiContext,__msg,
 		RmiName_SettingOK, Common.SettingOK);
 }
+public bool CardInfo(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, CardInfo_send info)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+		__msg.SimplePacketMode = core.IsSimplePacketMode();
+		Nettention.Proud.RmiID __msgid= Common.CardInfo;
+		__msg.Write(__msgid);
+		CardClient.Marshaler.Write(__msg, info);
+		
+	Nettention.Proud.HostID[] __list = new Nettention.Proud.HostID[1];
+	__list[0] = remote;
+		
+	return RmiSend(__list,rmiContext,__msg,
+		RmiName_CardInfo, Common.CardInfo);
+}
+
+public bool CardInfo(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext, CardInfo_send info)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+__msg.SimplePacketMode = core.IsSimplePacketMode();
+Nettention.Proud.RmiID __msgid= Common.CardInfo;
+__msg.Write(__msgid);
+CardClient.Marshaler.Write(__msg, info);
+		
+	return RmiSend(remotes,rmiContext,__msg,
+		RmiName_CardInfo, Common.CardInfo);
+}
+public bool ClearInfo(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+		__msg.SimplePacketMode = core.IsSimplePacketMode();
+		Nettention.Proud.RmiID __msgid= Common.ClearInfo;
+		__msg.Write(__msgid);
+		
+	Nettention.Proud.HostID[] __list = new Nettention.Proud.HostID[1];
+	__list[0] = remote;
+		
+	return RmiSend(__list,rmiContext,__msg,
+		RmiName_ClearInfo, Common.ClearInfo);
+}
+
+public bool ClearInfo(Nettention.Proud.HostID[] remotes,Nettention.Proud.RmiContext rmiContext)
+{
+	Nettention.Proud.Message __msg=new Nettention.Proud.Message();
+__msg.SimplePacketMode = core.IsSimplePacketMode();
+Nettention.Proud.RmiID __msgid= Common.ClearInfo;
+__msg.Write(__msgid);
+		
+	return RmiSend(remotes,rmiContext,__msg,
+		RmiName_ClearInfo, Common.ClearInfo);
+}
 // RMI name declaration.
 // It is the unique pointer that indicates RMI name such as RMI profiler.
 const string RmiName_SettingOK="SettingOK";
+const string RmiName_CardInfo="CardInfo";
+const string RmiName_ClearInfo="ClearInfo";
        
 const string RmiName_First = RmiName_SettingOK;
 		public override Nettention.Proud.RmiID[] GetRmiIDList() { return Common.RmiIDList; } 

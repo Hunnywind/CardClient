@@ -20,10 +20,15 @@ public partial class LogicManager : MonoBehaviour
     public GameObject[] enemyfields;
 
     private Player player;
+    private Enemy enemy;
+
     private Level presentlevel = Level.Init;
 
     private LogicStateMachine<LogicManager> stateMachine = new LogicStateMachine<LogicManager>();
+    private List<GameObject> manaObjects = new List<GameObject>();
 
+    private GameObject playerFields;
+    private GameObject enemyFields;
 
     public Level PresentLevel
     {
@@ -33,8 +38,18 @@ public partial class LogicManager : MonoBehaviour
     {
         get { return player; }
     }
-
-
+    public Enemy Enemy
+    {
+        get { return enemy; }
+    }
+    public GameObject PlayerFields
+    {
+        get { return playerFields; }
+    }
+    public GameObject EnemyFields
+    {
+        get { return enemyFields; }
+    }
     void Awake()
     {
         if (instance == null)
@@ -66,14 +81,17 @@ public partial class LogicManager : MonoBehaviour
     {
         if(enemySettingEnd)
         {
-            switch(presentlevel)
+            
+            switch (presentlevel)
             {
                 case Level.Init_Wait:
+                    
                     stateMachine.ChangeState(new BattleLogic());
                     presentlevel = Level.Battle;
                     enemySettingEnd = false;
                     break;
                 case Level.Return_Wait:
+                    
                     enemySettingEnd = false;
                     StartCoroutine(ReturnEnd());
                     break;
@@ -107,6 +125,7 @@ public partial class LogicManager : MonoBehaviour
             case Level.Init:
                 confirmButton.gameObject.SetActive(false);
                 presentlevel = Level.Init_Wait;
+                SendInfo();
                 GameClient.instance.Ready();
                 break;
             case Level.Return:
@@ -118,7 +137,6 @@ public partial class LogicManager : MonoBehaviour
                 confirmButton.gameObject.SetActive(false);
                 presentlevel = Level.Summon_Wait;
                 GameClient.instance.Ready();
-                
                 break;
         }
     }
@@ -137,38 +155,31 @@ public partial class LogicManager : MonoBehaviour
     private void PlayerSetting()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
-        if (player == null) Debug.Log("Can't find player");
+        enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
     }
     private void FieldSetting()
     {
-        Vector3 newPosition = new Vector3();
-        int blank = 50;
-        float odd_even = (fields.Length % 2 == 0) ? 1 : 0.5f;
-        GameObject.Find("FieldPool").
-                GetComponent<ObjectPool>().Init();
-        for (int i = 0; i < 5; i++)
+        playerFields = GameObject.Find("PlayerField");
+        enemyFields = GameObject.Find("EnemyField");
+        enemyFields.SetActive(false);
+        for(int i = 0; i < 5; i++)
         {
-            fields[i] = GameObject.Find("FieldPool").
-                GetComponent<ObjectPool>().GetObject();
-            fields[i].GetComponent<Field>().number = i + 1;
-
-            enemyfields[i] = GameObject.Find("FieldPool").
-                GetComponent<ObjectPool>().GetObject();
-            enemyfields[i].GetComponent<Field>().number = i + 1;
-            enemyfields[i].GetComponent<Field>().IsEnemyField = true;
-
-            newPosition.x = ((-((float)fields[i].GetComponent<SpriteRenderer>().sprite.texture.width * 0.5f + blank * 0.5f) *
-                    (fields.Length - 1)) +
-                    (((float)fields[i].GetComponent<SpriteRenderer>().sprite.texture.width + blank) * (i)))
-                    * 1 / 100;
-
-            newPosition.y = 1;
-            newPosition.z = 0;
-            fields[i].transform.position = newPosition;
-            newPosition.y = 100;
-            enemyfields[i].transform.position = newPosition;
+            fields[i] = playerFields.GetComponent<Fields>().GetField(i);
+            enemyfields[i] = enemyFields.GetComponent<Fields>().GetField(i);
         }
     }
-
+    public void EnemyInfoUpdate(CardInfo_send info)
+    {
+        enemy.CardAdd(info);
+    }
+    public void SendInfo()
+    {
+        GameClient.instance.ClearCard();
+        player.SendInfo();
+    }
+    public void ClearInfo()
+    {
+        enemy.CardClear();
+    }
 
 }
