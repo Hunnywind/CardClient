@@ -18,16 +18,22 @@ public partial class LogicManager : MonoBehaviour
     {
         get { return turnText; }
     }
-    public float turnDelay = 1.0f;
+    public float turnDelay = 0.1f;
 
     IEnumerator TurnStart()
     {
-        turnText.gameObject.SetActive(true);
-        turnText.text = "Turn " + presentTurn;
-        yield return new WaitForSeconds(1.5f);
+        player.m_mana++;
+        turnText.text = presentTurn.ToString();
+        GameObject.Find("TurnImage").GetComponent<TurnRound>().TurnEnd();
+        if(RandomSelecter.m_isMyTurn)
+        {
+            RandomSelecter.RandomActive();
+            bool[] ran = { RandomSelecter.GetRandomValue(0), RandomSelecter.GetRandomValue(1), RandomSelecter.GetRandomValue(2),
+            RandomSelecter.GetRandomValue(3), RandomSelecter.GetRandomValue(4)};
+            GameClient.instance.SendRandInfo(ran);
+        }
 
-        turnText.gameObject.SetActive(false);
-        player.mana++;
+        yield return new WaitForSeconds(0.5f);
         
         foreach (GameObject card in player.cards)
         {

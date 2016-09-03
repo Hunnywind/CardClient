@@ -25,11 +25,12 @@ public partial class LogicManager : MonoBehaviour
     private Level presentlevel = Level.Init;
 
     private LogicStateMachine<LogicManager> stateMachine = new LogicStateMachine<LogicManager>();
-    private List<GameObject> manaObjects = new List<GameObject>();
+    private ManaPool m_manapool;
 
     private GameObject playerFields;
     private GameObject enemyFields;
 
+    
     public Level PresentLevel
     {
         get { return presentlevel; }
@@ -59,46 +60,44 @@ public partial class LogicManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
     }
-
     void Start()
     {
         turnText = GameObject.Find("TurnText").GetComponent<Text>();
-        manaText = GameObject.Find("LeftManaText").GetComponent<Text>();
+        manaText = GameObject.Find("ManaText").GetComponent<Text>();
         confirmButton = GameObject.Find("ConfirmButton").GetComponent<Button>();
+        m_manapool = GameObject.Find("ManaTransform").GetComponent<ManaPool>();
 
         PlayerSetting();
         FieldSetting();
         stateMachine.Init(instance, new SettingLogic());
-        Debug.Log(Screen.height);
     }
-
     void Update()
     {
+        m_manapool.m_Pmana = player.m_mana;
         stateMachine.Update();
+        
         Update_server();
     }
     void Update_server()
     {
         if(enemySettingEnd)
         {
-            
             switch (presentlevel)
             {
                 case Level.Init_Wait:
-                    
-                    stateMachine.ChangeState(new BattleLogic());
                     presentlevel = Level.Battle;
+                    stateMachine.ChangeState(new BattleLogic());
                     enemySettingEnd = false;
                     break;
                 case Level.Return_Wait:
-                    
                     enemySettingEnd = false;
                     StartCoroutine(ReturnEnd());
                     break;
                 case Level.Summon_Wait:
                     enemySettingEnd = false;
-                    stateMachine.ChangeState(new BattleLogic());
-                    presentlevel = Level.Battle;
+                    StartCoroutine(DoSummon());
+                    //stateMachine.ChangeState(new BattleLogic());
+                    //presentlevel = Level.Battle;
                     break;
             }
         }
@@ -124,18 +123,24 @@ public partial class LogicManager : MonoBehaviour
         {
             case Level.Init:
                 confirmButton.gameObject.SetActive(false);
+                UIManager.instance.SettingText(true, "- 상대편의 선택을 기다리는 중 -");
                 presentlevel = Level.Init_Wait;
                 SendInfo();
+                GameClient.instance.SendCardCount(player.cards_hand.Count);
                 GameClient.instance.Ready();
                 break;
             case Level.Return:
                 confirmButton.gameObject.SetActive(false);
+                UIManager.instance.SettingText(true, "- 상대편의 선택을 기다리는 중 -");
                 presentlevel = Level.Return_Wait;
+                player.SendReturnInfo();
                 GameClient.instance.Ready();
                 break;
             case Level.Summon:
                 confirmButton.gameObject.SetActive(false);
+                UIManager.instance.SettingText(true, "- 상대편의 선택을 기다리는 중 -");
                 presentlevel = Level.Summon_Wait;
+                player.SendSummonInfo();
                 GameClient.instance.Ready();
                 break;
         }
@@ -155,31 +160,39 @@ public partial class LogicManager : MonoBehaviour
     private void PlayerSetting()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
+        player.Init();
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
+        UIManager.instance.SetMasterName(player.Name, enemy.Name);
+        UIManager.instance.ShowHP(true, enemy.MaxHP, enemy.PreHP);
+        UIManager.instance.ShowHP(false, player.MaxHP, player.PreHP);
     }
     private void FieldSetting()
     {
-        playerFields = GameObject.Find("PlayerField");
-        enemyFields = GameObject.Find("EnemyField");
+        playerFields = GameObject.Find("PlayerSpace");
+        enemyFields = GameObject.Find("EnemySpace");
         enemyFields.SetActive(false);
         for(int i = 0; i < 5; i++)
         {
-            fields[i] = playerFields.GetComponent<Fields>().GetField(i);
-            enemyfields[i] = enemyFields.GetComponent<Fields>().GetField(i);
+            fields[i] = playerFields.GetComponentInChildren<Fields>().GetField(i);
+            enemyfields[i] = enemyFields.GetComponentInChildren<Fields>().GetField(i);
         }
     }
+    
     public void EnemyInfoUpdate(CardInfo_send info)
     {
-        enemy.CardAdd(info);
+        enemy.AddCardWait(info);
     }
     public void SendInfo()
     {
-        GameClient.instance.ClearCard();
         player.SendInfo();
+    }
+    
+    public void SendClearInfo()
+    {
+        GameClient.instance.ClearCard();
     }
     public void ClearInfo()
     {
         enemy.CardClear();
     }
-
 }

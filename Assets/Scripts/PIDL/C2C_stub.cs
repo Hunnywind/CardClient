@@ -32,6 +32,36 @@ public BeforeRmiInvocationDelegate BeforeRmiInvocation = delegate(Nettention.Pro
 		{ 
 			return false;
 		};
+		public delegate bool InitDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int hostNum);  
+		public InitDelegate Init = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int hostNum)
+		{ 
+			return false;
+		};
+		public delegate bool HandCardCountDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int num);  
+		public HandCardCountDelegate HandCardCount = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int num)
+		{ 
+			return false;
+		};
+		public delegate bool ReturnInfoDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int fieldNum);  
+		public ReturnInfoDelegate ReturnInfo = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int fieldNum)
+		{ 
+			return false;
+		};
+		public delegate bool SummonInfoDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, CardInfo_send info);  
+		public SummonInfoDelegate SummonInfo = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, CardInfo_send info)
+		{ 
+			return false;
+		};
+		public delegate bool RandomInfoDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, bool ran1, bool ran2, bool ran3, bool ran4, bool ran5);  
+		public RandomInfoDelegate RandomInfo = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, bool ran1, bool ran2, bool ran3, bool ran4, bool ran5)
+		{ 
+			return false;
+		};
+		public delegate bool InitInfoDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int cardNum);  
+		public InitInfoDelegate InitInfo = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, int cardNum)
+		{ 
+			return false;
+		};
 	public override bool ProcessReceivedMessage(Nettention.Proud.ReceivedMessage pa, Object hostTag) 
 	{
 		Nettention.Proud.HostID remote=pa.RemoteHostID;
@@ -197,6 +227,320 @@ case Common.ClearInfo:
 		}
 	}
 	break;
+case Common.Init:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		int hostNum; CardClient.Marshaler.Read(__msg,out hostNum);	
+core.PostCheckReadMessage(__msg, RmiName_Init);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=hostNum.ToString()+",";
+			NotifyCallFromStub(Common.Init, RmiName_Init,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.Init;
+			summary.rmiName = RmiName_Init;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=Init (remote,ctx , hostNum );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_Init);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.Init;
+			summary.rmiName = RmiName_Init;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.HandCardCount:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		int num; CardClient.Marshaler.Read(__msg,out num);	
+core.PostCheckReadMessage(__msg, RmiName_HandCardCount);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=num.ToString()+",";
+			NotifyCallFromStub(Common.HandCardCount, RmiName_HandCardCount,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.HandCardCount;
+			summary.rmiName = RmiName_HandCardCount;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=HandCardCount (remote,ctx , num );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_HandCardCount);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.HandCardCount;
+			summary.rmiName = RmiName_HandCardCount;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.ReturnInfo:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		int fieldNum; CardClient.Marshaler.Read(__msg,out fieldNum);	
+core.PostCheckReadMessage(__msg, RmiName_ReturnInfo);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=fieldNum.ToString()+",";
+			NotifyCallFromStub(Common.ReturnInfo, RmiName_ReturnInfo,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.ReturnInfo;
+			summary.rmiName = RmiName_ReturnInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=ReturnInfo (remote,ctx , fieldNum );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_ReturnInfo);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.ReturnInfo;
+			summary.rmiName = RmiName_ReturnInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.SummonInfo:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		CardInfo_send info; CardClient.Marshaler.Read(__msg,out info);	
+core.PostCheckReadMessage(__msg, RmiName_SummonInfo);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=info.ToString()+",";
+			NotifyCallFromStub(Common.SummonInfo, RmiName_SummonInfo,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.SummonInfo;
+			summary.rmiName = RmiName_SummonInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=SummonInfo (remote,ctx , info );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_SummonInfo);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.SummonInfo;
+			summary.rmiName = RmiName_SummonInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.RandomInfo:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		bool ran1; CardClient.Marshaler.Read(__msg,out ran1);	
+bool ran2; CardClient.Marshaler.Read(__msg,out ran2);	
+bool ran3; CardClient.Marshaler.Read(__msg,out ran3);	
+bool ran4; CardClient.Marshaler.Read(__msg,out ran4);	
+bool ran5; CardClient.Marshaler.Read(__msg,out ran5);	
+core.PostCheckReadMessage(__msg, RmiName_RandomInfo);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=ran1.ToString()+",";
+parameterString+=ran2.ToString()+",";
+parameterString+=ran3.ToString()+",";
+parameterString+=ran4.ToString()+",";
+parameterString+=ran5.ToString()+",";
+			NotifyCallFromStub(Common.RandomInfo, RmiName_RandomInfo,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.RandomInfo;
+			summary.rmiName = RmiName_RandomInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=RandomInfo (remote,ctx , ran1, ran2, ran3, ran4, ran5 );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_RandomInfo);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.RandomInfo;
+			summary.rmiName = RmiName_RandomInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
+case Common.InitInfo:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		int cardNum; CardClient.Marshaler.Read(__msg,out cardNum);	
+core.PostCheckReadMessage(__msg, RmiName_InitInfo);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=cardNum.ToString()+",";
+			NotifyCallFromStub(Common.InitInfo, RmiName_InitInfo,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.InitInfo;
+			summary.rmiName = RmiName_InitInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=InitInfo (remote,ctx , cardNum );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_InitInfo);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.InitInfo;
+			summary.rmiName = RmiName_InitInfo;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
 		default:
 			 goto __fail;
 		}
@@ -212,6 +556,12 @@ __fail:
 const string RmiName_SettingOK="SettingOK";
 const string RmiName_CardInfo="CardInfo";
 const string RmiName_ClearInfo="ClearInfo";
+const string RmiName_Init="Init";
+const string RmiName_HandCardCount="HandCardCount";
+const string RmiName_ReturnInfo="ReturnInfo";
+const string RmiName_SummonInfo="SummonInfo";
+const string RmiName_RandomInfo="RandomInfo";
+const string RmiName_InitInfo="InitInfo";
        
 const string RmiName_First = RmiName_SettingOK;
 		public override Nettention.Proud.RmiID[] GetRmiIDList { get{return Common.RmiIDList;} }

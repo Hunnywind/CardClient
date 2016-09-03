@@ -7,4 +7,8 @@ public class ConfirmButton : MonoBehaviour {
     {
         LogicManager.instance.SettingEnd();
     }
+    public void DeckSave()
+    {
+        DeckManager.instance.SaveDeck();
+    }
 }
