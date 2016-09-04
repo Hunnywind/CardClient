@@ -141,7 +141,7 @@ public class Card : MonoBehaviour
     }
     public void Attacked(int dmg)
     {
-        //
+        
         damaged = true;
     }
     public void SetInfo(CardInfo_send pinfo)
@@ -150,8 +150,8 @@ public class Card : MonoBehaviour
         info = pinfo;
         cardinfo.attack = CardDatabase.Instance().GetCardData(info.number).attack;
         cardinfo.a_type = CardDatabase.Instance().GetCardData(info.number).a_type;
+        cardinfo.mana = CardDatabase.Instance().GetCardData(info.number).mana;
         cardinfo.leftcooltime = info.leftcooltime;
-        //cardinfo.mana = info.mana;
         cardinfo.cooltime = info.cooltime;
         fieldNumber = info.FieldLocation;
         int imageNum = CardDatabase.Instance().GetCardData(info.number).picture;

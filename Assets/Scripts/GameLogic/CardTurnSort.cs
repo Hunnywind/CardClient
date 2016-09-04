@@ -19,8 +19,6 @@ public class CardTurnSort : IComparer<GameObject>
             return 1;
         else
         {
-            
-
             if (RandomSelecter.GetRandomValue(randomCount))
             {
                 randomCount++;

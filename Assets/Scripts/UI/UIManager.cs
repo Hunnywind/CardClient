@@ -53,10 +53,10 @@ public class UIManager : MonoBehaviour {
         m_statusE = GameObject.Find("E_Status");
         m_playerMaster = GameObject.Find("PlayerMaster");
         m_enemyMaster = GameObject.Find("EnemyMaster");
-        m_playerName = GameObject.Find("P_Name").GetComponent<Text>();
-        m_enemyName = GameObject.Find("E_Name").GetComponent<Text>();
-        m_playerHPBar = GameObject.Find("P_HPBar").GetComponent<Scrollbar>();
-        m_enemyHPBar = GameObject.Find("E_HPBar").GetComponent<Scrollbar>();
+        //m_playerName = GameObject.Find("P_Name").GetComponent<Text>();
+        //m_enemyName = GameObject.Find("E_Name").GetComponent<Text>();
+        //m_playerHPBar = GameObject.Find("P_HPBar").GetComponent<Scrollbar>();
+        //m_enemyHPBar = GameObject.Find("E_HPBar").GetComponent<Scrollbar>();
     }
 
     void Start () {
@@ -66,42 +66,56 @@ public class UIManager : MonoBehaviour {
     }
     public void SettingText(bool able, string content = null)
     {
-        m_mainText.gameObject.SetActive(able);
-        m_mainText.text = content;
+        if (m_mainText != null)
+        {
+            m_mainText.gameObject.SetActive(able);
+            m_mainText.text = content;
+        }
     }
     public void ShowTurn(bool able)
     {
+        if(m_turnImage != null)
         m_turnImage.SetActive(able);
+        if(m_turnText != null)
         m_turnText.SetActive(able);
     }
     public void ShowOptionButton(bool able)
     {
+        if(m_optionButton != null)
         m_optionButton.SetActive(able);
     }
     public void ShowHP(bool isEnemy, int maxHp, int preHp)
     {
-        if(isEnemy)
+        if (isEnemy)
         {
+            if(m_enemyHPBar != null)
             m_enemyHPBar.size = (float)maxHp / (float)preHp;
         }
         else
         {
+            if(m_playerHPBar != null)
             m_playerHPBar.size = (float)maxHp / (float)preHp;
         }
     }
     public void SetMasterName(string player, string enemy)
     {
+        if(m_playerName != null)
         m_playerName.text = player;
+        if(m_enemyName != null)
         m_enemyName.text = enemy;
     }
     public void ShowMaster(bool able)
     {
+        if(m_playerMaster != null)
         m_playerMaster.SetActive(able);
+        if(m_enemyName != null)
         m_enemyMaster.SetActive(able);
     }
     public void ShowStatus(bool able)
     {
+        if(m_statusP != null)
         m_statusP.SetActive(able);
+        if(m_statusE != null)
         m_statusE.SetActive(able);
     }
     public float GetCardPosition(int size, int count)

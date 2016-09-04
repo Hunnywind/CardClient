@@ -14,6 +14,7 @@ public class RandomSelecter : MonoBehaviour {
     }
     public static bool GetRandomValue(int num)
     {
+        if (num > 4) num -= 5;
         return m_randomData[num];
     }
     public static void ReceiveValue(bool[] value)

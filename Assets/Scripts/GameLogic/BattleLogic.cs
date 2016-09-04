@@ -53,6 +53,8 @@ public partial class LogicManager : MonoBehaviour
         presentTurn++;
         turnEnableCards.Clear();
         if (presentTurn < 7)
+        {
             StartCoroutine(TurnStart());
+        }
     }
 }
