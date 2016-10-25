@@ -15,6 +15,7 @@ public class CardTurnSort : IComparer<GameObject>
 
         if (card1.FieldNumber < card2.FieldNumber)
             return -1;
+<<<<<<< HEAD
         else
             return 1;
 
@@ -40,6 +41,47 @@ public class CardTurnSort : IComparer<GameObject>
         //        return 1;
         //    }
             
+=======
+        else if (card1.FieldNumber > card2.FieldNumber)
+            return 1;
+        else
+        {
+            if (RandomSelecter.GetRandomValue(randomCount))
+            {
+                randomCount++;
+                if(randomCount > 4)
+                {
+                    randomCount = 0;
+                }
+                return -1;
+            }
+            else
+            {
+                randomCount++;
+                if(randomCount > 4)
+                {
+                    randomCount = 0;
+                }
+                return 1;
+            }
+            
+        }
+        //else if (card1.FieldNumber > card2.FieldNumber)
+        //    return 1;
+        //else if (card1.Cardinfo.cooltime < card2.Cardinfo.cooltime)
+        //    return -1;
+        //else if (card1.Cardinfo.cooltime > card2.Cardinfo.cooltime)
+        //    return 1;
+        //else if (card1.Cardinfo.mana > card2.Cardinfo.mana)
+        //    return -1;
+        //else if (card1.Cardinfo.mana < card2.Cardinfo.mana)
+        //    return 1;
+        //else
+        //{
+        //    int returnValue = 0;
+        //    returnValue = (Random.Range(0, 2) == 0) ? -1 : 1;
+        //    return returnValue;
+>>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         //}
     }
 }
