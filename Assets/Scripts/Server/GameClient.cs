@@ -10,10 +10,7 @@ public partial class GameClient : MonoBehaviour
 
     public static GameClient instance = null;
 
-    string m_serverAddr = "localhost";
     string m_groupName = "Group";
-    string m_loginButtonText = "Connect";
-    string m_failMessage = "";
 
     NetClient m_netClient = new NetClient();
 
@@ -52,12 +49,18 @@ public partial class GameClient : MonoBehaviour
         m_S2CStub.ReplyLogon = (Nettention.Proud.HostID remote, Nettention.Proud.RmiContext rmiContext, int clientID) =>
         {
             m_myhostID = (HostID)clientID;
+            CardDatabase.Instance().InitData();
             SetP2PRmiStub();
             return true;
         };
         m_S2CStub.ReplyClientCount = (Nettention.Proud.HostID remote, Nettention.Proud.RmiContext rmiContext, int clientCount) =>
         {
             ServerRoom.instance.ClientCount = clientCount;
+            return true;
+        };
+        m_S2CStub.SendCardData = (Nettention.Proud.HostID remote, Nettention.Proud.RmiContext rmiContext, CardData cardData) =>
+        {
+            CardDatabase.Instance().AddCardData(cardData);
             return true;
         };
     }
@@ -81,7 +84,10 @@ public partial class GameClient : MonoBehaviour
             MachingRequest();
         }
     }
-
+    public void RequestClientCount()
+    {
+        m_C2SProxy.RequestClientCount(HostID.HostID_Server, RmiContext.ReliableSend);
+    }
     private void IssueConnect()
     {
         m_netClient.AttachProxy(m_C2SProxy);
@@ -94,7 +100,6 @@ public partial class GameClient : MonoBehaviour
             if (info.errorType == ErrorType.ErrorType_Ok)
             {
                 m_state = State.LoggingOn;
-                m_loginButtonText = "Logging On...";
                 ServerRoom.instance.ServerJoinComplete();
                 m_C2SProxy.RequestLogon(HostID.HostID_Server, RmiContext.ReliableSend, m_groupName, false);
                 m_C2SProxy.RequestClientCount(HostID.HostID_Server, RmiContext.ReliableSend);
@@ -103,24 +108,24 @@ public partial class GameClient : MonoBehaviour
             else
             {
                 m_state = State.Failed;
-                m_loginButtonText = "FAIL!";
-                m_failMessage = info.ToString();
+                //m_failMessage = info.ToString();
             }
         };
         m_netClient.LeaveServerHandler = (ErrorInfo info) =>
         {
             m_state = State.Failed;
-            m_failMessage = "Disconnected from server: " + info.ToString();
+            //m_failMessage = "Disconnected from server: " + info.ToString();
         };
         
 
         NetConnectionParam cp = new NetConnectionParam();
-        cp.serverIP = "127.0.0.1";
-        cp.clientAddrAtServer = "127.0.0.1";
+        cp.serverIP = "175.204.115.169";
+        cp.clientAddrAtServer = "175.204.115.169";
         //cp.serverIP = m_serverAddr;
         //cp.clientAddrAtServer = m_serverAddr;
         cp.serverPort = 15005;
         cp.protocolVersion = new Nettention.Proud.Guid("{0x342e9077,0x4619,0x466f,{0xa9,0x34,0x1a,0x12,0x9f,0xde,0xa1,0xd}}");
+
 
         m_netClient.Connect(cp);
     }

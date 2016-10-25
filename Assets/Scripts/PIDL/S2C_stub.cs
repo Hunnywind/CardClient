@@ -7,7 +7,8 @@
 // Do not modify this file, but modify the source .pidl file.
 
 using System;
-using System.Net;	     
+using System.Net;
+using GameItem;
 
 namespace S2C
 {
@@ -28,6 +29,11 @@ public BeforeRmiInvocationDelegate BeforeRmiInvocation = delegate(Nettention.Pro
 		};
 		public delegate bool MachingCompleteDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext);  
 		public MachingCompleteDelegate MachingComplete = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext)
+		{ 
+			return false;
+		};
+		public delegate bool SendCardDataDelegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, CardData cardData);  
+		public SendCardDataDelegate SendCardData = delegate(Nettention.Proud.HostID remote,Nettention.Proud.RmiContext rmiContext, CardData cardData)
 		{ 
 			return false;
 		};
@@ -56,7 +62,7 @@ case Common.ReplyLogon:
 		ctx.encryptMode = pa.EncryptMode;
 		ctx.compressMode = pa.CompressMode;
 			
-		int clientID; CardClient.Marshaler.Read(__msg,out clientID);	
+		int clientID; CardClient.CardMarshaler.Read(__msg,out clientID);	
 core.PostCheckReadMessage(__msg, RmiName_ReplyLogon);
 		if(enableNotifyCallFromStub==true)
 		{
@@ -107,7 +113,7 @@ case Common.ReplyClientCount:
 		ctx.encryptMode = pa.EncryptMode;
 		ctx.compressMode = pa.CompressMode;
 			
-		int clientCount; CardClient.Marshaler.Read(__msg,out clientCount);	
+		int clientCount; CardClient.CardMarshaler.Read(__msg,out clientCount);	
 core.PostCheckReadMessage(__msg, RmiName_ReplyClientCount);
 		if(enableNotifyCallFromStub==true)
 		{
@@ -198,6 +204,57 @@ case Common.MachingComplete:
 		}
 	}
 	break;
+case Common.SendCardData:
+	{
+		Nettention.Proud.RmiContext ctx=new Nettention.Proud.RmiContext();
+		ctx.sentFrom=pa.RemoteHostID;
+		ctx.relayed=pa.IsRelayed;
+		ctx.hostTag=hostTag;
+		ctx.encryptMode = pa.EncryptMode;
+		ctx.compressMode = pa.CompressMode;
+			
+		CardData cardData; CardClient.CardMarshaler.Read(__msg,out cardData);	
+core.PostCheckReadMessage(__msg, RmiName_SendCardData);
+		if(enableNotifyCallFromStub==true)
+		{
+			string parameterString="";
+			parameterString+=cardData.ToString()+",";
+			NotifyCallFromStub(Common.SendCardData, RmiName_SendCardData,parameterString);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.BeforeRmiSummary summary = new Nettention.Proud.BeforeRmiSummary();
+			summary.rmiID = Common.SendCardData;
+			summary.rmiName = RmiName_SendCardData;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			BeforeRmiInvocation(summary);
+		}
+			
+		long t0 = Nettention.Proud.PreciseCurrentTime.GetTimeMs();
+			
+		// Call this method.
+		bool __ret=SendCardData (remote,ctx , cardData );
+			
+		if(__ret==false)
+		{
+			// Error: RMI function that a user did not create has been called. 
+			core.ShowNotImplementedRmiWarning(RmiName_SendCardData);
+		}
+			
+		if(enableStubProfiling)
+		{
+			Nettention.Proud.AfterRmiSummary summary = new Nettention.Proud.AfterRmiSummary();
+			summary.rmiID = Common.SendCardData;
+			summary.rmiName = RmiName_SendCardData;
+			summary.hostID = remote;
+			summary.hostTag = hostTag;
+			summary.elapsedTime = Nettention.Proud.PreciseCurrentTime.GetTimeMs()-t0;
+			AfterRmiInvocation(summary);
+		}
+	}
+	break;
 		default:
 			 goto __fail;
 		}
@@ -213,6 +270,7 @@ __fail:
 const string RmiName_ReplyLogon="ReplyLogon";
 const string RmiName_ReplyClientCount="ReplyClientCount";
 const string RmiName_MachingComplete="MachingComplete";
+const string RmiName_SendCardData="SendCardData";
        
 const string RmiName_First = RmiName_ReplyLogon;
 		public override Nettention.Proud.RmiID[] GetRmiIDList { get{return Common.RmiIDList;} }

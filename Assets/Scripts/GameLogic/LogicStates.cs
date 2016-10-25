@@ -8,46 +8,54 @@ namespace LogicStates
 {
     public class SettingLogic : LogicState<LogicManager>
     {
-        GameObject background;
-        GameObject background_setting;
+        private GameObject skillButton;
 
         public override void enter(LogicManager entity)
         {
-            background = GameObject.Find("Background");
-            background_setting = GameObject.Find("Background_setting");
-
-            background.SetActive(false);
-            entity.TurnText.gameObject.SetActive(false);
+            GameClient.instance.FirstSetting();
+            skillButton = GameObject.Find("MasterSkillButton");
+            skillButton.SetActive(false);
+            UIManager.instance.ShowStatus(false);
+            UIManager.instance.ShowMaster(false);
+            UIManager.instance.ShowOptionButton(false);
+            UIManager.instance.ShowTurn(false);
             ObjectPool objpool = GameObject.Find("CardPool").GetComponent<ObjectPool>();
             objpool.Init();
-            Vector3 newPosition = new Vector3();
-            int blank = 30;
-            for (int i = 0; i < entity.Player.cardNum; i++)
+
+            for (int i = 0; i < entity.Player.m_cardNum; i++)
             {
                 GameObject card = objpool.GetObject();
-                newPosition.x = ((-((float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.width * 0.5f + blank * 0.5f - 2f) *
-                    (entity.Player.cardNum - 1)) +
-                    (((float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.width + blank)* i))
-                    * 1 / 150;
-                newPosition.y = -(float)card.GetComponentInChildren<SpriteRenderer>().sprite.texture.height * 1 / 200;
-                    
-                newPosition.z = 0;
-                card.transform.position = newPosition;
+                CardData data = CardDatabase.Instance()
+                    .GetCardData(CardDatabase.Instance().GetPlayerCard(i));
+                CardInfo_send info;
+                info.number = data.number;
+                info.isEnemyCard = false;
+                info.FieldLocation = 0;
+                info.cooltime = data.speed;
+                info.isReturn = false;
+                info.leftcooltime = data.speed;
+                card.GetComponent<Card>().SetInfo(info);
                 card.GetComponent<Card>().Init();
+                
                 entity.Player.cards.Add(card);
             }
+
         }
         public override void update(LogicManager entity)
         {
-            entity.manaText.text = "";
+            entity.manaText.text = entity.Player.m_mana + " / 12";
             entity.Player.CardManaCheck();
         }
         public override void exit(LogicManager entity)
         {
-            background.SetActive(true);
-            background_setting.SetActive(false);
-            entity.manaText.gameObject.SetActive(false);
-
+            foreach(var card in entity.Player.cards_hand)
+            {
+                card.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            }
+            //skillButton.SetActive(false);
+            UIManager.instance.ShowOptionButton(true);
+            UIManager.instance.ShowStatus(true);
+            UIManager.instance.ShowMaster(true);
             Vector3 newPosition = new Vector3();
             newPosition.x = 0;
             newPosition.y = 0;
@@ -60,35 +68,45 @@ namespace LogicStates
     {
         public override void enter(LogicManager entity)
         {
-            entity.TurnText.gameObject.SetActive(true);
+            UIManager.instance.ShowTurn(true);
+            UIManager.instance.SettingText(false);
+            
             Debug.Log("Battle Logic Start");
             entity.presentTurn = 1;
-            Vector3 newPosition = new Vector3();
-            for (int i = 0; i < 5; i++)
-            {
-                newPosition = entity.fields[i].transform.position;
-                newPosition.y = -1;
-                entity.fields[i].transform.position = newPosition;
+            //Vector3 newPosition = new Vector3();
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    newPosition = entity.fields[i].transform.position;
+            //    newPosition.y = -1;
+            //    entity.fields[i].transform.position = newPosition;
 
-                newPosition = entity.enemyfields[i].transform.position;
-                newPosition.y = 1;
-                entity.enemyfields[i].transform.position = newPosition;
-            }
+            //    newPosition = entity.enemyfields[i].transform.position;
+            //    newPosition.y = 1;
+            //    entity.enemyfields[i].transform.position = newPosition;
+            //}
+            GameObject.Find("TurnImage").GetComponent<TurnRound>().Init();
+            entity.EnemyFields.GetComponent<Space>().m_isBattle = true;
+            entity.PlayerFields.GetComponent<Space>().m_isBattle = true;
             entity.Player.CardArrange();
+            entity.Player.CardInHandArrange();
+            entity.Enemy.CardInit();
             entity.Enemy.CardArrange();
+            entity.Enemy.CardInHandArrange();
             entity.LogicCoroutineStart(Level.Battle);
         }
         public override void update(LogicManager entity)
         {
-            if(entity.presentTurn > 6)
+            entity.manaText.text = entity.Player.m_mana + " / 12";
+            if (entity.presentTurn > 6)
             {
                 entity.ChangeState(new ReturnLogic());
             }
         }
         public override void exit(LogicManager entity)
         {
-            entity.TurnText.gameObject.SetActive(true);
-            entity.TurnText.text = "Battle Phase End";
+            //entity.TurnText.gameObject.SetActive(true);
+            //entity.TurnText.text = "Battle Phase End";
+            UIManager.instance.ShowTurn(false);
         }
     }
     public class ReturnLogic : LogicState<LogicManager>
@@ -96,17 +114,14 @@ namespace LogicStates
         public override void enter(LogicManager entity)
         {
             Debug.Log("Return Logic Start");
-            Vector3 newPosition = new Vector3();
-            newPosition.x = (1280 * 1/2);
-            newPosition.y = (-720 * 1/2 + entity.confirmButton.gameObject.GetComponent<RectTransform>().sizeDelta.y);
-            newPosition.z = 0;
-            entity.confirmButton.gameObject.GetComponent<RectTransform>().anchoredPosition = newPosition;
-
+            UIManager.instance.SettingText(true, "- 회수할 카드를 선택하세요 -");
+            entity.EnemyFields.GetComponent<Space>().m_isPrepare = true;
+            entity.PlayerFields.GetComponent<Space>().m_isPrepare = true;
             entity.LogicCoroutineStart(Level.Return);
         }
         public override void update(LogicManager entity)
         {
-            entity.manaText.text = "Left Mana : " + entity.Player.mana;
+            entity.manaText.text = entity.Player.m_mana + " / 12";
         }
         public override void exit(LogicManager entity)
         {
@@ -117,16 +132,16 @@ namespace LogicStates
         public override void enter(LogicManager entity)
         {
             Debug.Log("Summon Logic Start");
-
+            UIManager.instance.SettingText(true, "- 소환할 카드를 선택하세요 -");
             entity.LogicCoroutineStart(Level.Summon);
         }
         public override void update(LogicManager entity)
         {
-            entity.manaText.text = "Left Mana : " + entity.Player.mana;
+            entity.manaText.text = entity.Player.m_mana + " / 12";
         }
         public override void exit(LogicManager entity)
         {
-            entity.manaText.gameObject.SetActive(false);
+            //entity.manaText.gameObject.SetActive(false);
             entity.confirmButton.gameObject.SetActive(false);
         }
     }

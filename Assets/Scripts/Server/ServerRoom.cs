@@ -10,6 +10,8 @@ public class ServerRoom : MonoBehaviour {
     private int clientCount = 0;
     private Text clientCountText;
     private Text buttonText;
+    private GameObject deckButton;
+    private static bool isServerConnect = false;
 
     public int ClientCount
     {
@@ -22,7 +24,8 @@ public class ServerRoom : MonoBehaviour {
             instance = this;
         else if (instance != this)
             Destroy(gameObject);
-        DontDestroyOnLoad(gameObject);
+
+        deckButton = GameObject.Find("DeckMakeButton");
     }
 
     void Start()
@@ -30,6 +33,12 @@ public class ServerRoom : MonoBehaviour {
         clientCountText = GameObject.Find("ClientCount").GetComponent<Text>();
         buttonText = GameObject.Find("ConnectText").GetComponent<Text>();
         clientCountText.gameObject.SetActive(false);
+        deckButton.SetActive(false);
+        if (isServerConnect)
+        {
+            ServerJoinComplete();
+            GameClient.instance.RequestClientCount();
+        }
     }
 
     void Update()
@@ -45,8 +54,10 @@ public class ServerRoom : MonoBehaviour {
     }
     public void ServerJoinComplete()
     {
+        isServerConnect = true;
         clientCountText.gameObject.SetActive(true);
         buttonText.text = "Game Start";
+        deckButton.SetActive(true);
     }
     public void MachingComplete()
     {
@@ -55,6 +66,6 @@ public class ServerRoom : MonoBehaviour {
     }
     private void GameStart()
     {
-        SceneManager.LoadScene("GamePlay");
+        SceneManager.LoadScene("UI");
     }
 }

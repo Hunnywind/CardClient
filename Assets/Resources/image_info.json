@@ -1,0 +1,16 @@
+{
+	"CardImages": [
+		{
+			"number": 1,
+			"name": "picture1"
+		},
+		{
+			"number": 2,
+			"name": "picture2"
+		},
+		{
+			"number": 3,
+			"name": "picture3"
+		}
+	]
+}

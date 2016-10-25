@@ -18,18 +18,6 @@ public class CardStateMachine<T> where T : class
             return;
         }
     }
-    public void MouseDown()
-    {
-        current_state.mouseDown(owner_entity);
-    }
-    public void MouseUp()
-    {
-        current_state.mouseUp(owner_entity);
-    }
-    public void MouseDrag()
-    {
-        current_state.mouseDrag(owner_entity);
-    }
     public void ChangeState(CardState<T> newState)
     {
         if (newState == null) return;

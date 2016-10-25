@@ -16,11 +16,23 @@ namespace C2C
 			public const Nettention.Proud.RmiID SettingOK = (Nettention.Proud.RmiID)5000+1;
 			public const Nettention.Proud.RmiID CardInfo = (Nettention.Proud.RmiID)5000+2;
 			public const Nettention.Proud.RmiID ClearInfo = (Nettention.Proud.RmiID)5000+3;
+			public const Nettention.Proud.RmiID Init = (Nettention.Proud.RmiID)5000+4;
+			public const Nettention.Proud.RmiID HandCardCount = (Nettention.Proud.RmiID)5000+5;
+			public const Nettention.Proud.RmiID ReturnInfo = (Nettention.Proud.RmiID)5000+6;
+			public const Nettention.Proud.RmiID SummonInfo = (Nettention.Proud.RmiID)5000+7;
+			public const Nettention.Proud.RmiID RandomInfo = (Nettention.Proud.RmiID)5000+8;
+			public const Nettention.Proud.RmiID InitInfo = (Nettention.Proud.RmiID)5000+9;
 		// List that has RMI ID.
 		public static Nettention.Proud.RmiID[] RmiIDList = new Nettention.Proud.RmiID[] {
 			SettingOK,
 			CardInfo,
 			ClearInfo,
+			Init,
+			HandCardCount,
+			ReturnInfo,
+			SummonInfo,
+			RandomInfo,
+			InitInfo,
 		};
 	}
 }

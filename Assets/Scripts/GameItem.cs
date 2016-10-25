@@ -43,26 +43,35 @@ namespace GameItem
         HERO,
         ALL_NOTFRONT,
     }
-
+    public struct CardData
+    {
+        public int number;
+        public string name;
+        public int mana;
+        public int attack;
+        public int speed;
+        public int a_type;
+        public int effect;
+        public int picture;
+    }
     public struct CardInfo
     {
         public int mana;
+        public int attack;
         public int cooltime;
         public int leftcooltime;
+        public int a_type;
         public string cardName;
     }
     
     public struct CardInfo_send
     {
-        public int mana;
+        public int number;
+        //public int mana;
         public int cooltime;
         public int leftcooltime;
-        public string cardName;
-
-        public int cardLocation;
         public int FieldLocation;
-        public int attackType;
-        public int maxHp;
-        public int presentHp;
+        public bool isReturn;
+        public bool isEnemyCard;
     }
 }
