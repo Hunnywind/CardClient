@@ -47,16 +47,10 @@ public partial class LogicManager : MonoBehaviour
             obj.GetComponentInChildren<SpriteRenderer>().enabled = true;
         }
         yield return new WaitForSeconds(2f);
-<<<<<<< HEAD
-        foreach (var obj in summonCards)
-        {
-            Debug.Log("Card Summon!");
-=======
         summonCards.Sort(new CardTurnSort());
         foreach (var obj in summonCards)
         {
             Debug.Log(obj.GetComponent<Card>().FieldNumber);
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
             obj.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             if (obj.GetComponent<Card>().IsEnemyCard)
             {
@@ -68,15 +62,10 @@ public partial class LogicManager : MonoBehaviour
             }
             yield return new WaitForSeconds(1f);
         }
-<<<<<<< HEAD
         Debug.Log("Summon End");
         yield return new WaitForSeconds(0.5f);
         presentlevel = Level.Battle;
-=======
-        yield return new WaitForSeconds(0.5f);
-        presentlevel = Level.Battle;
         summonCards.Clear();
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         ChangeState(new BattleLogic());
     }
 }

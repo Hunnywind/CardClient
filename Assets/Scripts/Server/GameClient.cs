@@ -119,8 +119,8 @@ public partial class GameClient : MonoBehaviour
         
 
         NetConnectionParam cp = new NetConnectionParam();
-        cp.serverIP = "175.204.115.169";
-        cp.clientAddrAtServer = "175.204.115.169";
+        cp.serverIP = "127.0.0.1";
+        cp.clientAddrAtServer = "127.0.0.1";
         //cp.serverIP = m_serverAddr;
         //cp.clientAddrAtServer = m_serverAddr;
         cp.serverPort = 15005;

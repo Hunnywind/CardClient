@@ -24,13 +24,10 @@ public partial class LogicManager : MonoBehaviour
 
     IEnumerator TurnStart()
     {
-<<<<<<< HEAD
         int num = 0;
         int playerFieldNum = 6;
         int enemyFieldNum = 6;
 
-=======
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         player.m_mana++;
         turnText.text = presentTurn.ToString();
         GameObject.Find("TurnImage").GetComponent<TurnRound>().TurnEnd();

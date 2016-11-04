@@ -42,22 +42,13 @@ public class Card : MonoBehaviour
         get { return damaged; }
         set { damaged = value; }
     }
-    public bool Damaged
-    {
-        get { return damaged; }
-        set { damaged = value; }
-    }
     public int FieldNumber
     {
         get { return fieldNumber; }
         set
         {
             if(value < 6)
-<<<<<<< HEAD
                 fieldNumber = value;
-=======
-            fieldNumber = value;
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         }
     }
     public CardInfo Cardinfo
@@ -103,13 +94,6 @@ public class Card : MonoBehaviour
     {
         positionMachine.ChangeState(position);
     }
-<<<<<<< HEAD
-    public void ChangePosition(CardPosition<Card> position)
-    {
-        positionMachine.ChangeState(position);
-    }
-=======
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
     public string GetCurrentStateName()
     {
         return stateMachine.Get_CurrentState().GetStateName();
@@ -118,10 +102,6 @@ public class Card : MonoBehaviour
     {
         return positionMachine.Get_CurrentState().GetPosition();
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
     public void OnMouseDown()
     {
         positionMachine.MouseDown();
@@ -150,7 +130,6 @@ public class Card : MonoBehaviour
     }
     public void AttackReady()
     {
-<<<<<<< HEAD
         if (attackReady)
         {
             if (!isEnemyCard)
@@ -161,8 +140,6 @@ public class Card : MonoBehaviour
     }
     public void InfoSend()
     {
-=======
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         //if (fieldNumber == 0)
         //{
         //    info.cardLocation = (int)CardLocation.HAND;
@@ -183,10 +160,6 @@ public class Card : MonoBehaviour
     }
     public void Attacked(int dmg)
     {
-<<<<<<< HEAD
-=======
-        
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         damaged = true;
     }
     public void SetInfo(CardInfo_send pinfo)
@@ -195,13 +168,8 @@ public class Card : MonoBehaviour
         info = pinfo;
         cardinfo.attack = CardDatabase.Instance().GetCardData(info.number).attack;
         cardinfo.a_type = CardDatabase.Instance().GetCardData(info.number).a_type;
-<<<<<<< HEAD
         cardinfo.leftcooltime = info.leftcooltime;
-        //cardinfo.mana = info.mana;
-=======
         cardinfo.mana = CardDatabase.Instance().GetCardData(info.number).mana;
-        cardinfo.leftcooltime = info.leftcooltime;
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         cardinfo.cooltime = info.cooltime;
         fieldNumber = info.FieldLocation;
         int imageNum = CardDatabase.Instance().GetCardData(info.number).picture;

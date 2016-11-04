@@ -49,7 +49,6 @@ public class Player : Participant {
             }
         }
     }
-
     public void CardInHandArrange()
     {
         Vector3 newPosition = new Vector3();

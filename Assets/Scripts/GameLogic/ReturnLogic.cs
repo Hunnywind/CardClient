@@ -50,10 +50,7 @@ public partial class LogicManager : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
         player.LockAction();
-<<<<<<< HEAD
-=======
         returnCards.Clear();
->>>>>>> 70ebc7505a8a6384034b9b65e7ebfab1be2633a1
         stateMachine.ChangeState(new SummonLogic());
     }
 }
