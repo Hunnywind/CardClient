@@ -38,9 +38,7 @@ public partial class LogicManager : MonoBehaviour
             RandomSelecter.GetRandomValue(3), RandomSelecter.GetRandomValue(4)};
             GameClient.instance.SendRandInfo(ran);
         }
-
-        yield return new WaitForSeconds(0.5f);
-        
+        yield return new WaitForSeconds(0.5f);        
         foreach (GameObject card in player.cards)
         {
             card.GetComponent<Card>().TurnStart();
@@ -59,7 +57,6 @@ public partial class LogicManager : MonoBehaviour
             if (card.GetComponent<Card>().IsAttackReady)
                 num++;
         }
-
         for(int i = 0; i < num; i++)
         {
             foreach (GameObject card in player.cards)
@@ -85,7 +82,6 @@ public partial class LogicManager : MonoBehaviour
             {
                 enemyFieldNum = turnEnableEnemyCards[0].GetComponent<Card>().FieldNumber;
             }
-
             // compare field number
             if(playerFieldNum < enemyFieldNum)
             {
@@ -106,8 +102,6 @@ public partial class LogicManager : MonoBehaviour
                     turnEnablePlayerCards[0].GetComponent<Card>().AttackOrder = false;
                 }
             }
-
-
             yield return new WaitForSeconds(turnDelay);
             
             turnEnablePlayerCards.Clear();

@@ -8,6 +8,8 @@ public class Storage : MonoBehaviour {
     private Vector2 m_cardStartPosition;
     [SerializeField]
     private float m_blank;
+    [SerializeField]
+    private bool m_isHorizon;
 
     private List<GameObject> m_cards = new List<GameObject>();
 
@@ -43,7 +45,10 @@ public class Storage : MonoBehaviour {
         {
             for(int i = 0; i < m_cards.Count; i++)
             {
-                m_cards[i].transform.position = m_cardStartPosition + new Vector2(i * m_blank, 0);
+                if(m_isHorizon)
+                    m_cards[i].transform.position = m_cardStartPosition + new Vector2(i * m_blank, 0);
+                else
+                    m_cards[i].transform.position = m_cardStartPosition + new Vector2(0, i * m_blank);
             }
             yield return null;
         }

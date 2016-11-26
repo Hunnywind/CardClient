@@ -53,6 +53,7 @@ namespace GameItem
         public int a_type;
         public int effect;
         public int picture;
+        public int health;
     }
     public struct CardInfo
     {
@@ -62,6 +63,7 @@ namespace GameItem
         public int leftcooltime;
         public int a_type;
         public string cardName;
+        public int health;
     }
     
     public struct CardInfo_send
@@ -71,6 +73,7 @@ namespace GameItem
         public int cooltime;
         public int leftcooltime;
         public int FieldLocation;
+        public int health;
         public bool isReturn;
         public bool isEnemyCard;
     }

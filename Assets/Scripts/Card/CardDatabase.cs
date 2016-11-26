@@ -15,7 +15,6 @@ class CardDatabase
         if (s_instance == null)
         {
             s_instance = new CardDatabase();
-            s_instance.InitData();
         }
         return s_instance;
     }

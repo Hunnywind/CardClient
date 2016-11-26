@@ -34,6 +34,7 @@ namespace LogicStates
                 info.cooltime = data.speed;
                 info.isReturn = false;
                 info.leftcooltime = data.speed;
+                info.health = data.health;
                 card.GetComponent<Card>().SetInfo(info);
                 card.GetComponent<Card>().Init();
                 

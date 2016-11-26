@@ -11,4 +11,8 @@ public class DeckMakeButton : MonoBehaviour {
     {
         SceneManager.LoadScene("Main");
     }
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }

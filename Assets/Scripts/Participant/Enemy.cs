@@ -9,6 +9,9 @@ public class Enemy : Participant
     private List<CardInfo_send> cards_wait = new List<CardInfo_send>();
     private List<int> return_wait = new List<int>();
 
+    [SerializeField]
+    private Sprite m_cardBackSprite;
+
     protected override void Awake()
     {
         m_MaxHp = 10;
@@ -70,6 +73,8 @@ public class Enemy : Participant
             newPosition.x = UIManager.instance.GetCardPosition(cards_hand.Count, i);
             newPosition.y = 5;
             newPosition.z = 0;
+            cards_hand[i].GetComponentInChildren<SpriteRenderer>().sprite = m_cardBackSprite;
+            cards_hand[i].SendMessage("EnemyCardSetting");
             cards_hand[i].GetComponentInChildren<SpriteRenderer>().sortingOrder = 2 + cards_hand.Count - i;
             cards_hand[i].transform.position = newPosition;
         }
@@ -96,6 +101,7 @@ public class Enemy : Participant
             info.leftcooltime = 0;
             info.isReturn = false;
             info.isEnemyCard = true;
+            info.health = 0;
             card.GetComponent<Card>().SetInfo(info);
             card.GetComponent<Card>().Init();
         }

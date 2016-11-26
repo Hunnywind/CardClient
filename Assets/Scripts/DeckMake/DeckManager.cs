@@ -5,8 +5,9 @@ using UnityEngine.UI;
 public class DeckManager : MonoBehaviour {
 
     public static DeckManager instance = null;
-
+    [SerializeField]
     private Storage m_deckStorage;
+    [SerializeField]
     private Storage m_cardStorage;
 
     private int m_cost;
@@ -35,9 +36,6 @@ public class DeckManager : MonoBehaviour {
             instance = this;
         else if (instance != this)
             Destroy(gameObject);
-
-        m_deckStorage = GameObject.Find("DeckList").GetComponent<Storage>();
-        m_cardStorage = GameObject.Find("CardList").GetComponent<Storage>();
     }
     void Start()
     {

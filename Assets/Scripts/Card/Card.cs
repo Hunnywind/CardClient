@@ -24,6 +24,16 @@ public class Card : MonoBehaviour
     [SerializeField]
     private GameObject m_cardImage;
 
+    // 그래픽
+    [SerializeField]
+    private TextMesh m_name;
+    [SerializeField]
+    private TextMesh m_attack;
+    [SerializeField]
+    private TextMesh m_speed;
+    [SerializeField]
+    private TextMesh m_health;
+
 
     public bool AttackOrder
     {
@@ -170,15 +180,32 @@ public class Card : MonoBehaviour
         cardinfo.a_type = CardDatabase.Instance().GetCardData(info.number).a_type;
         cardinfo.leftcooltime = info.leftcooltime;
         cardinfo.mana = CardDatabase.Instance().GetCardData(info.number).mana;
+        cardinfo.cardName = CardDatabase.Instance().GetCardData(info.number).name;
         cardinfo.cooltime = info.cooltime;
         fieldNumber = info.FieldLocation;
-        int imageNum = CardDatabase.Instance().GetCardData(info.number).picture;
-        Texture2D s = Resources.Load(CardDatabase.Instance().GetImageFileName(imageNum)) as Texture2D;
-        Rect r = new Rect(0, 0, s.width, s.height);
-        m_cardImage.GetComponent<SpriteRenderer>().sprite = Sprite.Create(s, r, new Vector2(0.5f, 0.5f));
+        m_name.text = cardinfo.cardName;
+        m_attack.text = cardinfo.attack.ToString();
+        m_speed.text = cardinfo.cooltime.ToString();
+        m_health.text = cardinfo.health.ToString();
+        m_name.GetComponent<MeshRenderer>().sortingOrder = 99;
+        m_attack.GetComponent<MeshRenderer>().sortingOrder = 98;
+        m_speed.GetComponent<MeshRenderer>().sortingOrder = 97;
+        m_health.GetComponent<MeshRenderer>().sortingOrder = 96;
+        //int imageNum = CardDatabase.Instance().GetCardData(info.number).picture;
+        //Texture2D s = Resources.Load(CardDatabase.Instance().GetImageFileName(imageNum)) as Texture2D;
+        //Rect r = new Rect(0, 0, s.width, s.height);
+        //m_cardImage.GetComponent<SpriteRenderer>().sprite = Sprite.Create(s, r, new Vector2(0.5f, 0.5f));
         if (pinfo.isReturn)
         {
             LogicManager.instance.AddReturnCard(this);
         }
+        
+    }
+    public void EnemyCardSetting()
+    {
+        m_name.gameObject.SetActive(false);
+        m_attack.gameObject.SetActive(false);
+        m_speed.gameObject.SetActive(false);
+        m_health.gameObject.SetActive(false);
     }
 }

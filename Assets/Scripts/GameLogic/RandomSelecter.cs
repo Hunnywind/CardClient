@@ -21,9 +21,11 @@ public class RandomSelecter : MonoBehaviour {
         bool value = m_randomData[m_index];
         m_index++;
         if (m_index > 4) m_index = 0;
-        return value;
+        if (m_isMyTurn)
+            return value;
+        else
+            return !value;
     }
-        
     public static void ReceiveValue(bool[] value)
     {
         for(int i = 0; i < 5; i++)

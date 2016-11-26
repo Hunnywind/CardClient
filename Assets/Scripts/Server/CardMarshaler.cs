@@ -18,6 +18,7 @@ namespace CardClient
             msg.Write(b.a_type);
             msg.Write(b.effect);
             msg.Write(b.picture);
+            msg.Write(b.health);
         }
         public static void Read(Nettention.Proud.Message msg, out CardData b)
         {
@@ -30,6 +31,7 @@ namespace CardClient
             msg.Read(out b.a_type);
             msg.Read(out b.effect);
             msg.Read(out b.picture);
+            msg.Read(out b.health);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace CardClient
             msg.Write(b.leftcooltime);
             //msg.Write(b.cardLocation);
             msg.Write(b.FieldLocation);
+            msg.Write(b.health);
             msg.Write(b.isReturn);
             msg.Write(b.isEnemyCard);
             //msg.Write(b.attackType);
@@ -29,6 +30,7 @@ namespace CardClient
             msg.Read(out b.leftcooltime);
             //msg.Read(out b.cardLocation);
             msg.Read(out b.FieldLocation);
+            msg.Read(out b.health);
             msg.Read(out b.isReturn);
             msg.Read(out b.isEnemyCard);
             
