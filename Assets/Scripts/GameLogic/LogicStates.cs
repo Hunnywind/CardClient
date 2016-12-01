@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using GameItem;
+using CardPositions;
 
 namespace LogicStates
 {
@@ -19,6 +20,7 @@ namespace LogicStates
             UIManager.instance.ShowMaster(false);
             UIManager.instance.ShowOptionButton(false);
             UIManager.instance.ShowTurn(false);
+            UIManager.instance.ShowGameEndText(false, false);
             ObjectPool objpool = GameObject.Find("CardPool").GetComponent<ObjectPool>();
             objpool.Init();
 
@@ -37,7 +39,7 @@ namespace LogicStates
                 info.health = data.health;
                 card.GetComponent<Card>().SetInfo(info);
                 card.GetComponent<Card>().Init();
-                
+                card.GetComponent<Card>().ChangePosition(new InHand());
                 entity.Player.cards.Add(card);
             }
 
@@ -45,11 +47,11 @@ namespace LogicStates
         public override void update(LogicManager entity)
         {
             entity.manaText.text = entity.Player.m_mana + " / 12";
-            entity.Player.CardManaCheck();
+            //entity.Player.CardManaCheck();
         }
         public override void exit(LogicManager entity)
         {
-            foreach(var card in entity.Player.cards_hand)
+            foreach (var card in entity.Player.cards_hand)
             {
                 card.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             }
@@ -71,7 +73,7 @@ namespace LogicStates
         {
             UIManager.instance.ShowTurn(true);
             UIManager.instance.SettingText(false);
-            
+
             Debug.Log("Battle Logic Start");
             entity.presentTurn = 1;
             //Vector3 newPosition = new Vector3();
@@ -144,6 +146,19 @@ namespace LogicStates
         {
             //entity.manaText.gameObject.SetActive(false);
             entity.confirmButton.gameObject.SetActive(false);
+        }
+    }
+    public class GameEndLogic : LogicState<LogicManager>
+    {
+        public override void enter(LogicManager entity)
+        {
+        }
+        public override void update(LogicManager entity)
+        {
+            
+        }
+        public override void exit(LogicManager entity)
+        {
         }
     }
 }

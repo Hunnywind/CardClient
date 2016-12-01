@@ -20,11 +20,18 @@ public class Card : MonoBehaviour
     public bool m_isReturn = false;
 
     public bool m_lock;
+    private int m_preHealth;
 
     [SerializeField]
     private GameObject m_cardImage;
+    [SerializeField]
+    private Sprite m_cardSprite;
 
     // 그래픽
+    [SerializeField]
+    private GameObject m_manacrystal;
+    [SerializeField]
+    private TextMesh m_mana;
     [SerializeField]
     private TextMesh m_name;
     [SerializeField]
@@ -33,7 +40,8 @@ public class Card : MonoBehaviour
     private TextMesh m_speed;
     [SerializeField]
     private TextMesh m_health;
-
+    [SerializeField]
+    private GameObject m_renderObj;
 
     public bool AttackOrder
     {
@@ -93,7 +101,8 @@ public class Card : MonoBehaviour
     public void Init()
     {
         stateMachine.Init(this, new Setting());
-        positionMachine.Init(this, new InHand());
+        //positionMachine.Init(this, new InHand());
+        positionMachine.Init(this, null);
     }
     public void ChangeState(CardState<Card> state)
     {
@@ -132,9 +141,12 @@ public class Card : MonoBehaviour
         //Debug.Log("CoolTime: " + cardinfo.cooltime);
         cardinfo.leftcooltime--;
         //Debug.Log("LeftCoolTime: " + cardinfo.leftcooltime);
+        m_speed.text = cardinfo.leftcooltime.ToString();
         if (cardinfo.leftcooltime <= 0)
         {
             cardinfo.leftcooltime = cardinfo.cooltime;
+            m_speed.text = "A";
+            m_speed.color = Color.yellow;
             attackReady = true;
         }
     }
@@ -147,6 +159,11 @@ public class Card : MonoBehaviour
             else
                 LogicManager.instance.CardEnemyAdd(gameObject);
         }
+    }
+    public void AttackComplete()
+    {
+        m_speed.text = cardinfo.cooltime.ToString();
+        m_speed.color = Color.white;
     }
     public void InfoSend()
     {
@@ -170,7 +187,15 @@ public class Card : MonoBehaviour
     }
     public void Attacked(int dmg)
     {
-        damaged = true;
+        //damaged = true;
+        m_preHealth -= dmg;
+        if (m_preHealth < cardinfo.health) m_health.color = Color.red;
+        m_health.text = m_preHealth.ToString();
+        if (m_preHealth < 1)
+        {
+            gameObject.GetComponentInChildren<Animator>().SetTrigger("TriggerDestroy");
+            CardDestroy();
+        }
     }
     public void SetInfo(CardInfo_send pinfo)
     {
@@ -182,11 +207,15 @@ public class Card : MonoBehaviour
         cardinfo.mana = CardDatabase.Instance().GetCardData(info.number).mana;
         cardinfo.cardName = CardDatabase.Instance().GetCardData(info.number).name;
         cardinfo.cooltime = info.cooltime;
+        cardinfo.health = info.health;
+        m_preHealth = info.health;
         fieldNumber = info.FieldLocation;
+        m_mana.text = cardinfo.mana.ToString();
         m_name.text = cardinfo.cardName;
         m_attack.text = cardinfo.attack.ToString();
         m_speed.text = cardinfo.cooltime.ToString();
-        m_health.text = cardinfo.health.ToString();
+        m_health.text = m_preHealth.ToString();
+        m_mana.GetComponent<MeshRenderer>().sortingOrder = 95;
         m_name.GetComponent<MeshRenderer>().sortingOrder = 99;
         m_attack.GetComponent<MeshRenderer>().sortingOrder = 98;
         m_speed.GetComponent<MeshRenderer>().sortingOrder = 97;
@@ -207,5 +236,65 @@ public class Card : MonoBehaviour
         m_attack.gameObject.SetActive(false);
         m_speed.gameObject.SetActive(false);
         m_health.gameObject.SetActive(false);
+        m_mana.gameObject.SetActive(false);
+        m_manacrystal.gameObject.SetActive(false);
+    }
+
+    public void CardTextPositionMove(Vector3 position)
+    {
+        m_name.transform.position = position + new Vector3(0, 0.8f, 0);
+        m_attack.transform.position = position + new Vector3(0, 0.33f, 0);
+        m_speed.transform.position = position + new Vector3(0, -0.04f, 0);
+        m_health.transform.position = position + new Vector3(0, -0.43f, 0);
+        m_mana.transform.position = position + new Vector3(-0.7f, 1, 0);
+        m_manacrystal.transform.position = position + new Vector3(-0.7f, 1, -0.5f);
+    }
+    public void CardTextSet(bool able)
+    {
+        m_renderObj.SetActive(able);
+        m_name.gameObject.SetActive(able);
+        m_attack.gameObject.SetActive(able);
+        m_speed.gameObject.SetActive(able);
+        m_health.gameObject.SetActive(able);
+        m_mana.gameObject.SetActive(able);
+    }
+    public void Heal(bool isFull, int value)
+    {
+        if (isFull)
+            m_preHealth = cardinfo.health;
+        else
+            m_preHealth += value;
+
+        if (m_preHealth >= cardinfo.health) m_health.color = Color.white;
+        m_health.text = m_preHealth.ToString();
+    }
+    public void CardDestroy()
+    {
+        if (attackReady)
+            LogicManager.instance.CardDestroyAtBattle(this);
+        attackReady = false;
+        attackOrder = false;
+    }
+    public void CardDestroyComplete()
+    {
+        if (isEnemyCard)
+        {
+            LogicManager.instance.Enemy.cards.Remove(gameObject);
+            LogicManager.instance.Enemy.RemoveCardHand(gameObject);
+            LogicManager.instance.Enemy.AddTrashCard(info);
+        }
+        else
+        {
+            if (fieldNumber > 0 && fieldNumber < 6)
+                LogicManager.instance.FieldColliderSet(fieldNumber, true);
+            LogicManager.instance.Player.AddTrashCard(info);
+            LogicManager.instance.Player.cards.Remove(gameObject);
+        }
+        m_renderObj.GetComponent<SpriteRenderer>().sprite = m_cardSprite;
+        m_attack.color = Color.white;
+        m_speed.color = Color.white;
+        m_health.color = Color.white;
+        fieldNumber = 0;
+        gameObject.SetActive(false);
     }
 }

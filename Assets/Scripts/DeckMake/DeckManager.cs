@@ -25,7 +25,7 @@ public class DeckManager : MonoBehaviour {
         }
         set
         {
-            m_cost += value;
+            m_cost = value;
             CostUpdate();
         }
     }
@@ -43,14 +43,14 @@ public class DeckManager : MonoBehaviour {
     }
     private void CostUpdate()
     {
-        m_costText.text = m_cost + " / 20";
-        if(m_cost > 20)
+        m_costText.text = m_cost + " / 5";
+        if(m_cost != 5)
         {
             m_costText.color = Color.red;
         }
         else
         {
-            m_costText.color = Color.black;
+            m_costText.color = Color.white;
         }
     }
     public void Init()
@@ -61,9 +61,11 @@ public class DeckManager : MonoBehaviour {
             StorageCard s = card.GetComponent<StorageCard>();
             s.SetData(CardDatabase.Instance().GetCardData(i));
         }
+        SoundManager.Instance.PlayBGM(2);
     }
     public void MoveToDeck(GameObject card)
     {
+        
         m_cardStorage.RemoveCard(card);
         m_deckStorage.AddCard(card);
     }

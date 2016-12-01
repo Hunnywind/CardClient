@@ -39,6 +39,13 @@ public class UIManager : MonoBehaviour {
     private Scrollbar m_playerHPBar;
     private Scrollbar m_enemyHPBar;
 
+    private Text m_playerHealth;
+    private Text m_enemyHealth;
+
+    private GameObject m_playerBar;
+    private GameObject m_enemyBar;
+
+    private Text m_gameEndText;
 
     void Awake()
     {
@@ -48,15 +55,21 @@ public class UIManager : MonoBehaviour {
             Destroy(gameObject);
 
         m_mainText = GameObject.Find("SettingText").GetComponent<Text>();
-        m_optionButton = GameObject.Find("OptionButton");
-        m_statusP = GameObject.Find("P_Status");
-        m_statusE = GameObject.Find("E_Status");
-        m_playerMaster = GameObject.Find("PlayerMaster");
-        m_enemyMaster = GameObject.Find("EnemyMaster");
-        m_playerName = GameObject.Find("P_Name").GetComponent<Text>();
-        m_enemyName = GameObject.Find("E_Name").GetComponent<Text>();
-        m_playerHPBar = GameObject.Find("P_HPBar").GetComponent<Scrollbar>();
-        m_enemyHPBar = GameObject.Find("E_HPBar").GetComponent<Scrollbar>();
+        //m_optionButton = GameObject.Find("OptionButton");
+        //m_statusP = GameObject.Find("P_Status");
+        //m_statusE = GameObject.Find("E_Status");
+        m_playerMaster = GameObject.Find("PlayerPentagram");
+        m_enemyMaster = GameObject.Find("EnemyPentagram");
+        m_playerHealth = GameObject.Find("PlayerHealth").GetComponent<Text>();
+        m_enemyHealth = GameObject.Find("EnemyHealth").GetComponent<Text>();
+        m_playerBar = GameObject.Find("PlayerBar");
+        m_enemyBar = GameObject.Find("EnemyBar");
+        m_gameEndText = GameObject.Find("GameEndText").GetComponent<Text>();
+
+        //m_playerName = GameObject.Find("P_Name").GetComponent<Text>();
+        //m_enemyName = GameObject.Find("E_Name").GetComponent<Text>();
+        //m_playerHPBar = GameObject.Find("P_HPBar").GetComponent<Scrollbar>();
+        //m_enemyHPBar = GameObject.Find("E_HPBar").GetComponent<Scrollbar>();
     }
 
     void Start () {
@@ -76,33 +89,50 @@ public class UIManager : MonoBehaviour {
     }
     public void ShowOptionButton(bool able)
     {
-        m_optionButton.SetActive(able);
+        //m_optionButton.SetActive(able);
     }
     public void ShowHP(bool isEnemy, int maxHp, int preHp)
     {
         if(isEnemy)
         {
-            m_enemyHPBar.size = (float)maxHp / (float)preHp;
+            m_enemyHealth.text = preHp.ToString();
+            if (maxHp > preHp)
+                m_enemyHealth.color = Color.red;
+            else
+                m_enemyHealth.color = Color.white;
         }
         else
         {
-            m_playerHPBar.size = (float)maxHp / (float)preHp;
+            m_playerHealth.text = preHp.ToString();
+            if (maxHp > preHp)
+                m_playerHealth.color = Color.red;
+            else
+                m_playerHealth.color = Color.white;
         }
     }
     public void SetMasterName(string player, string enemy)
     {
-        m_playerName.text = player;
-        m_enemyName.text = enemy;
+        //m_playerName.text = player;
+        //m_enemyName.text = enemy;
     }
     public void ShowMaster(bool able)
     {
+        m_playerBar.SetActive(able);
+        m_enemyBar.SetActive(able);
         m_playerMaster.SetActive(able);
         m_enemyMaster.SetActive(able);
+        m_playerHealth.gameObject.SetActive(able);
+        m_enemyHealth.gameObject.SetActive(able);
+    }
+    public void DamagedMaster(bool isEnemy)
+    {
+        if (isEnemy) m_enemyBar.GetComponent<Animator>().SetTrigger("Damaged");
+        else m_playerBar.GetComponent<Animator>().SetTrigger("Damaged");
     }
     public void ShowStatus(bool able)
     {
-        m_statusP.SetActive(able);
-        m_statusE.SetActive(able);
+        //m_statusP.SetActive(able);
+        //m_statusE.SetActive(able);
     }
     public float GetCardPosition(int size, int count)
     {
@@ -116,5 +146,20 @@ public class UIManager : MonoBehaviour {
             return m_middleBoxStartPosition.x + m_cardSize.x * 0.5f + (interval * count);
 
         }
+    }
+    public void ShowGameEndText(bool able, bool isWin)
+    {
+        if(able)
+        {
+            if(isWin)
+            {
+                m_gameEndText.text = "승리!";
+            }
+            else
+            {
+                m_gameEndText.text = "패배!";
+            }
+        }
+        m_gameEndText.gameObject.SetActive(able);
     }
 }

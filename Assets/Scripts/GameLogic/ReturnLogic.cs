@@ -9,30 +9,45 @@ using CardPositions;
 public partial class LogicManager : MonoBehaviour
 {
     private List<GameObject> returnCards = new List<GameObject>();
+    private List<GameObject> returnPlayerCards = new List<GameObject>();
+    private List<GameObject> returnEnemyCards = new List<GameObject>();
+    private int returnCount = 0;
 
     public void EnemyReturnInfoUpdate(int fieldNum)
     {
+        // use it?
         enemy.AddReturnWait(fieldNum);
     }
 
     public void AddReturnCard(Card card)
     {
-        returnCards.Add(card.gameObject);
+        if (card.IsEnemyCard)
+        {
+            card.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
+            returnEnemyCards.Add(card.gameObject);
+        }
+        else
+            returnPlayerCards.Add(card.gameObject);
+        returnCount++;
     }
     public void RemoveReturnCard(Card card)
     {
-        returnCards.Remove(card.gameObject);
+        if (card.IsEnemyCard)
+            returnEnemyCards.Remove(card.gameObject);
+        else
+            returnPlayerCards.Remove(card.gameObject);
+        returnCount--;
     }
     IEnumerator ReturnStart()
     {
         presentlevel = Level.Return;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         confirmButton.gameObject.SetActive(true);
     }
     IEnumerator ReturnEnd()
     {
         presentlevel = Level.Return_End;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         StartCoroutine(DoReturn());
         
     }
@@ -40,17 +55,68 @@ public partial class LogicManager : MonoBehaviour
     {
         enemy.ReturnCardSet();
         yield return new WaitForSeconds(1f);
-        returnCards.Sort(new CardTurnSort());
         UIManager.instance.SettingText(false);
-        Debug.Log("Return Cards Num:" + returnCards.Count);
-        foreach (var card in returnCards)
+        Debug.Log("ReturnCardP " + returnPlayerCards.Count);
+        Debug.Log("ReturnCardE " + returnEnemyCards.Count);
+        if (RandomSelecter.m_isMyTurn)
         {
-            Debug.Log("Return Card Active!");
-            card.GetComponent<Card>().ChangePosition(new InHand());
-            yield return new WaitForSeconds(0.5f);
+            RandomSelecter.RandomActive();
+            bool[] ran = { RandomSelecter.GetRandomValue(0), RandomSelecter.GetRandomValue(1), RandomSelecter.GetRandomValue(2),
+            RandomSelecter.GetRandomValue(3), RandomSelecter.GetRandomValue(4)};
+            GameClient.instance.SendRandInfo(ran);
+        }
+        for(int i = 0; i < returnCount; i++)
+        {
+            int playerFieldNum = 6;
+            int enemyFieldNum = 6;
+
+            returnPlayerCards.Sort(new CardTurnSort());
+            returnEnemyCards.Sort(new CardTurnSort());
+            if (returnPlayerCards.Count != 0)
+            {
+                playerFieldNum = returnPlayerCards[0].GetComponent<Card>().FieldNumber;
+            }
+            if (returnEnemyCards.Count != 0)
+            {
+                enemyFieldNum = returnEnemyCards[0].GetComponent<Card>().FieldNumber;
+            }
+            if (playerFieldNum < enemyFieldNum)
+            {
+                returnPlayerCards[0].GetComponent<Card>().ChangePosition(new InHand());
+                returnPlayerCards[0].GetComponent<Card>().FieldNumber = 0;
+                returnPlayerCards[0].GetComponent<Card>().Heal(true, 0);
+                returnPlayerCards.RemoveAt(0);
+            }
+            else if (playerFieldNum > enemyFieldNum)
+            {
+                returnEnemyCards[0].GetComponent<Card>().ChangePosition(new InHand());
+                returnEnemyCards[0].GetComponent<Card>().FieldNumber = 0;
+                returnEnemyCards[0].GetComponent<Card>().Heal(true, 0);
+                returnEnemyCards.RemoveAt(0);
+            }
+            else
+            {
+                if (RandomSelecter.GetRandomValue_n())
+                {
+                    returnPlayerCards[0].GetComponent<Card>().ChangePosition(new InHand());
+                    returnPlayerCards[0].GetComponent<Card>().FieldNumber = 0;
+                    returnPlayerCards[0].GetComponent<Card>().Heal(true, 0);
+                    returnPlayerCards.RemoveAt(0);
+                }
+                else
+                {
+                    returnEnemyCards[0].GetComponent<Card>().ChangePosition(new InHand());
+                    returnEnemyCards[0].GetComponent<Card>().FieldNumber = 0;
+                    returnEnemyCards[0].GetComponent<Card>().Heal(true, 0);
+                    returnEnemyCards.RemoveAt(0);
+                }
+            }
+            yield return new WaitForSeconds(turnDelay);
         }
         player.LockAction();
-        returnCards.Clear();
+        returnPlayerCards.Clear();
+        returnEnemyCards.Clear();
+        returnCount = 0;
         stateMachine.ChangeState(new SummonLogic());
     }
 }

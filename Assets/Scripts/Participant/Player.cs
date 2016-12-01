@@ -9,12 +9,13 @@ public class Player : Participant {
     private float m_cardPosition_y;
     [SerializeField]
     private float m_battleCardPosition_y;
+    
 
     protected override void Awake()
     {
-        m_MaxHp = 10;
-        m_preHp = 10;
-        m_name = "Genji";
+        m_MaxHp = 20;
+        m_preHp = 20;
+        m_name = "Player";
     }
     protected override void Start()
     {
@@ -30,12 +31,29 @@ public class Player : Participant {
     }
     public void Damaged(int fieldNum, int dmg)
     {
+        bool isCardDamaged = false;
         foreach (var card in cards)
         {
             if (fieldNum == card.GetComponent<Card>().FieldNumber)
             {
                 card.GetComponent<Card>().Attacked(dmg);
+                isCardDamaged = true;
             }
+        }
+        if(!isCardDamaged)
+        {
+            PlayerDamage(dmg);
+        }
+    }
+    public void PlayerDamage(int dmg)
+    {
+        m_preHp -= dmg;
+        UIManager.instance.DamagedMaster(false);
+        UIManager.instance.ShowHP(false, m_MaxHp, m_preHp);
+        if(m_preHp <= 0)
+        {
+            // player lose
+            LogicManager.instance.GameEnd(false);
         }
     }
     public override void CardArrange()
@@ -95,10 +113,12 @@ public class Player : Participant {
     public void AddMana(int _mana)
     {
         m_mana += _mana;
+        CardManaCheck();
     }
     public void SubtractMana(int _mana)
     {
         m_mana -= _mana;
+        CardManaCheck();
     }
     public void CardManaCheck()
     {

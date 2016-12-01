@@ -34,6 +34,7 @@ public class ServerRoom : MonoBehaviour {
         buttonText = GameObject.Find("ConnectText").GetComponent<Text>();
         clientCountText.gameObject.SetActive(false);
         deckButton.SetActive(false);
+        SoundManager.Instance.PlayBGM(0);
         if (isServerConnect)
         {
             ServerJoinComplete();

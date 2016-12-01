@@ -16,6 +16,8 @@ public class StorageCard : MonoBehaviour
     [SerializeField]
     private GameObject m_cardImage;
     [SerializeField]
+    private GameObject m_manacrystal;
+    [SerializeField]
     private GameObject m_name;
     [SerializeField]
     private GameObject m_attack;
@@ -36,8 +38,8 @@ public class StorageCard : MonoBehaviour
         else
         {
             DeckManager.instance.MoveToDeck(gameObject);
-            DeckManager.instance.Cost = m_cardData.mana;
-            ToList();
+            DeckManager.instance.Cost = DeckManager.instance.Cost + 1;
+            ToDeck();
         }
         m_name.GetComponent<MeshRenderer>().sortingOrder = 99;
         m_attack.GetComponent<MeshRenderer>().sortingOrder = 98;
@@ -48,6 +50,7 @@ public class StorageCard : MonoBehaviour
     public void AddDeck()
     {
         CardDatabase.Instance().AddPlayerDeck(m_cardData.number);
+        
     }
     public void SetData(CardData data)
     {
@@ -68,20 +71,21 @@ public class StorageCard : MonoBehaviour
         if(m_position.Equals("DECK"))
         {
             DeckManager.instance.MoveToList(gameObject);
-            DeckManager.instance.Cost = -m_cardData.mana;
+            DeckManager.instance.Cost = DeckManager.instance.Cost - 1;
             ToList();
         }
         else
         {
+            if (DeckManager.instance.Cost >= 5) return;
             DeckManager.instance.MoveToDeck(gameObject);
-            DeckManager.instance.Cost = m_cardData.mana;
+            DeckManager.instance.Cost = DeckManager.instance.Cost + 1;
             ToDeck();
         }
     }
     private void ToDeck()
     {
         gameObject.GetComponent<BoxCollider2D>().size = new Vector2(3.8f, 0.5f);
-        m_mana.SetActive(true);
+        m_mana.gameObject.transform.localPosition = new Vector3(-1.68f, 0, 0);
         m_name.GetComponent<TextMesh>().anchor = TextAnchor.MiddleLeft;
         //m_name.transform.position = new Vector3(-1.2f, 0, 0);
         m_name.transform.localPosition = new Vector3(-1.2f, 0, 0);
@@ -89,17 +93,19 @@ public class StorageCard : MonoBehaviour
         m_speed.SetActive(false);
         m_health.SetActive(false);
         m_cardImage.GetComponent<SpriteRenderer>().sprite = m_deckSprite;
+        m_manacrystal.SetActive(false);
         m_position = "DECK";
     }
     private void ToList()
     {
         m_name.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-        m_mana.SetActive(false);
+        m_mana.gameObject.transform.localPosition = new Vector3(-0.7f, 1.0f, 0);
         m_name.transform.localPosition = new Vector3(0, 0.8f, 0);
         m_attack.SetActive(true);
         m_speed.SetActive(true);
         m_health.SetActive(true);
         m_cardImage.GetComponent<SpriteRenderer>().sprite = m_cardSprite;
+        m_manacrystal.SetActive(true);
         m_position = "LIST";
     }
 }

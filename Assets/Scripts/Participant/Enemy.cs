@@ -14,9 +14,9 @@ public class Enemy : Participant
 
     protected override void Awake()
     {
-        m_MaxHp = 10;
-        m_preHp = 10;
-        m_name = "Hanjo";
+        m_MaxHp = 20;
+        m_preHp = 20;
+        m_name = "Enemy";
     }
     protected override void Start()
     {
@@ -28,12 +28,18 @@ public class Enemy : Participant
     }
     public void Damaged(int fieldNum, int dmg)
     {
+        bool isCardDamaged = false;
         foreach(var card in cards)
         {
             if(fieldNum == card.GetComponent<Card>().FieldNumber)
             {
                 card.GetComponent<Card>().Attacked(dmg);
+                isCardDamaged = true;
             }
+        }
+        if(!isCardDamaged)
+        {
+            EnemyDamage(dmg);
         }
     }
     public void AddCardHand(GameObject card)
@@ -43,16 +49,30 @@ public class Enemy : Participant
             cards_hand.Add(card);
         }
     }
+    public void EnemyDamage(int dmg)
+    {
+        m_preHp -= dmg;
+        UIManager.instance.DamagedMaster(true);
+        UIManager.instance.ShowHP(true, m_MaxHp, m_preHp);
+        if (m_preHp <= 0)
+        {
+            // player win
+            LogicManager.instance.GameEnd(true);
+        }
+    }
     public void RemoveCardHand(GameObject card)
     {
         if (card == null)
         {
+            cards_hand[cards_hand.Count - 1].SetActive(false);
             cards_hand.RemoveAt(cards_hand.Count - 1);
         }
         else if (cards_hand.Contains(card))
         {
+            card.SetActive(false);
             cards_hand.Remove(card);
         }
+        CardInHandArrange();
     }
     public override void CardArrange()
     {
@@ -104,6 +124,7 @@ public class Enemy : Participant
             info.health = 0;
             card.GetComponent<Card>().SetInfo(info);
             card.GetComponent<Card>().Init();
+            card.GetComponent<Card>().ChangePosition(new InHand());
         }
         CardWaitClear();
         m_cardNum = 0;
@@ -148,6 +169,10 @@ public class Enemy : Participant
     private void CardWaitClear()
     {
         cards_wait.Clear();
+    }
+    public void AddCard(GameObject card)
+    {
+        cards.Add(card);
     }
     IEnumerator CoroutineUpdate()
     {

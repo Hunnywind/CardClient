@@ -43,6 +43,7 @@ namespace CardStates
             {
                 entity.AttackOrder = false;
                 anim.SetTrigger("TriggerAttack");
+                SoundManager.Instance.PlaySE(SoundManager.SoundEffect.ATTACK);
                 if(!entity.IsEnemyCard)
                 {
                     foreach(var val in attackField)

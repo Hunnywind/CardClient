@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using GameItem;
 using LogicStates;
+using UnityEngine.SceneManagement;
 
 public partial class LogicManager : MonoBehaviour
 {
@@ -58,7 +59,7 @@ public partial class LogicManager : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
     void Start()
     {
@@ -70,6 +71,7 @@ public partial class LogicManager : MonoBehaviour
         PlayerSetting();
         FieldSetting();
         stateMachine.Init(instance, new SettingLogic());
+        SoundManager.Instance.PlayBGM(1);
     }
     void Update()
     {
@@ -155,6 +157,7 @@ public partial class LogicManager : MonoBehaviour
     }
     public void FieldColliderSet(int num, bool enable)
     {
+        if(num == 0) { Debug.Log("Zero"); return; }
         fields[num - 1].GetComponent<BoxCollider2D>().enabled = enable;
     }
     public void ChangeState(LogicState<LogicManager> state)
@@ -198,5 +201,19 @@ public partial class LogicManager : MonoBehaviour
     public void ClearInfo()
     {
         enemy.CardClear();
+    }
+
+    public void GameEnd(bool isWin)
+    {
+        ChangeState(new GameEndLogic());
+        StopAllCoroutines();
+        UIManager.instance.ShowGameEndText(true, isWin);
+        Invoke("ReturnToMain", 3f);
+        if (isWin) SoundManager.Instance.PlaySE(SoundManager.SoundEffect.WIN);
+        else SoundManager.Instance.PlaySE(SoundManager.SoundEffect.LOSE);
+    }
+    public void ReturnToMain()
+    {
+        SceneManager.LoadScene("Main");
     }
 }

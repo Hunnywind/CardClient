@@ -17,27 +17,6 @@ public class CardTurnSort : IComparer<GameObject>
             return -1;
         else if (card1.FieldNumber > card2.FieldNumber)
             return 1;
-        else
-        {
-            if (RandomSelecter.GetRandomValue(randomCount))
-            {
-                randomCount++;
-                if(randomCount > 4)
-                {
-                    randomCount = 0;
-                }
-                return -1;
-            }
-            else
-            {
-                randomCount++;
-                if(randomCount > 4)
-                {
-                    randomCount = 0;
-                }
-                return 1;
-            }
-            
-        }
+        return 0;
     }
 }

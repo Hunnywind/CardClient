@@ -25,7 +25,6 @@ namespace CardPositions
             m_drag.GetComponent<SpriteRenderer>().sortingOrder = 5;
             m_render = entity.gameObject.GetComponentInChildren<SpriteRenderer>();
             m_drag_render = m_drag.GetComponent<SpriteRenderer>();
-
             if (!entity.IsEnemyCard)
             {
                 LogicManager.instance.Player.AddCardHand(entity.gameObject);
@@ -35,6 +34,7 @@ namespace CardPositions
                 LogicManager.instance.Enemy.AddCardHand(entity.gameObject);
             }
 
+            entity.FieldNumber = 0;
         }
         public override void exit(Card entity)
         {
@@ -72,17 +72,20 @@ namespace CardPositions
             else if (entity.GetCurrentStateName().Equals("SETTING")
                 || entity.GetCurrentStateName().Equals("SUMMON"))
             {
+                if (LogicManager.instance.Player.m_mana < entity.cardinfo.mana) return;
                 m_render.enabled = true;
                 m_drag_render.enabled = false;
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
                 if(!hit)
                 {
                     entity.gameObject.transform.position = m_initialPosition;
+                    entity.CardTextPositionMove(m_initialPosition);
                 }
                 else if (hit.transform.tag.Equals("PlayerField"))
                 {
                     LogicManager.instance.Player.SubtractMana(entity.Cardinfo.mana);
                     entity.gameObject.transform.position = hit.transform.position;
+                    entity.CardTextPositionMove(hit.transform.position);
                     entity.FieldNumber = hit.transform.gameObject.GetComponent<Field>().number;
                     LogicManager.instance.FieldColliderSet(entity.FieldNumber, false);
                     m_goField = true;
@@ -91,6 +94,7 @@ namespace CardPositions
                 else
                 {
                     entity.gameObject.transform.position = m_initialPosition;
+                    entity.CardTextPositionMove(m_initialPosition);
                 }
             }
         }
@@ -99,13 +103,16 @@ namespace CardPositions
             if (entity.IsEnemyCard) return;
             if (entity.GetCurrentStateName().Equals("BATTLE") || entity.GetCurrentStateName().Equals("RETURN"))
                 return;
+            if (LogicManager.instance.Player.m_mana < entity.cardinfo.mana) return;
 
-            m_render.enabled = false;
-            m_drag_render.enabled = true;
             Vector3 newPosition = new Vector3();
             newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             newPosition.z = 100;
+            m_render.enabled = false;
+            m_drag_render.enabled = true;
+           
             m_drag.transform.position = newPosition;
+            entity.CardTextPositionMove(newPosition);
         }
 
         public override string GetPosition()
@@ -126,8 +133,7 @@ namespace CardPositions
             entity.m_isReturn = false;
             entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             LogicManager.instance.FieldColliderSet(entity.FieldNumber, true);
-            entity.FieldNumber = 0;
-
+            //entity.FieldNumber = 0;
         }
         public override void update(Card entity)
         {
@@ -136,10 +142,12 @@ namespace CardPositions
             {
                 if (entity.IsEnemyCard)
                 {
+                    if(entity.FieldNumber == 0) { Debug.Log("Zero"); return; }
                     entity.gameObject.transform.position = LogicManager.instance.enemyfields[entity.FieldNumber - 1].transform.position;
                 }
                 else
                 {
+                    if (entity.FieldNumber == 0) { Debug.Log("Zero"); return; }
                     entity.gameObject.transform.position = LogicManager.instance.fields[entity.FieldNumber - 1].transform.position;
                 }
 

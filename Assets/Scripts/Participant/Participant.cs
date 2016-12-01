@@ -11,7 +11,9 @@ public class Participant : MonoBehaviour {
     protected int m_MaxHp;
     protected int m_preHp;
     protected string m_name;
-    
+
+    protected List<CardInfo_send> m_trashCards = new List<CardInfo_send>();
+
     public int MaxHP
     {
         get { return m_MaxHp; }
@@ -37,6 +39,14 @@ public class Participant : MonoBehaviour {
     [SerializeField]
     protected float m_interval;
 
+    public void AddTrashCard(CardInfo_send info)
+    {
+        m_trashCards.Add(info);
+    }
+    public List<CardInfo_send> GetTrashCards()
+    {
+        return m_trashCards;
+    }
     protected virtual void Awake()
     {
 

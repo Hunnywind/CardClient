@@ -12,7 +12,17 @@ public class Storage : MonoBehaviour {
     private bool m_isHorizon;
 
     private List<GameObject> m_cards = new List<GameObject>();
+    private int m_pageNum = 0;
 
+    public int PageNum
+    {
+        get { return m_pageNum; }
+        set { m_pageNum = value; }
+    }
+    public int GetCardNum()
+    {
+        return m_cards.Count;
+    }
     void Start()
     {
         StartCoroutine(CardArray());
@@ -41,12 +51,22 @@ public class Storage : MonoBehaviour {
     }
     IEnumerator CardArray()
     {
+        // 덱 4x2로 정렬
         while(true)
         {
             for(int i = 0; i < m_cards.Count; i++)
             {
-                if(m_isHorizon)
-                    m_cards[i].transform.position = m_cardStartPosition + new Vector2(i * m_blank, 0);
+                m_cards[i].transform.position = new Vector3(100, 0, 0);
+            }
+            for(int i = m_pageNum * 8; i < m_cards.Count && i < (m_pageNum + 1) * 8; i++)
+            {
+                if (m_isHorizon)
+                {
+                    if(i < 4 + m_pageNum * 8 && i >= m_pageNum * 8)
+                        m_cards[i].transform.position = m_cardStartPosition + new Vector2((i - m_pageNum * 8) * m_blank, 0);
+                    else
+                        m_cards[i].transform.position = m_cardStartPosition + new Vector2((i - 4 - m_pageNum * 8) * m_blank, -m_blank - 1);
+                }
                 else
                     m_cards[i].transform.position = m_cardStartPosition + new Vector2(0, i * m_blank);
             }

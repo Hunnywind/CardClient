@@ -9,6 +9,7 @@ public partial class LogicManager : MonoBehaviour
 {
     private List<GameObject> turnEnablePlayerCards = new List<GameObject>();
     private List<GameObject> turnEnableEnemyCards = new List<GameObject>();
+    private int BattleNum = 0;
 
     private Text turnText;
 
@@ -22,9 +23,21 @@ public partial class LogicManager : MonoBehaviour
     }
     public float turnDelay = 0.1f;
 
+    public void CardDestroyAtBattle(Card card)
+    {
+        if(card.IsEnemyCard)
+        {
+            turnEnableEnemyCards.Remove(card.gameObject);
+        }
+        else
+        {
+            turnEnablePlayerCards.Remove(card.gameObject);
+        }
+        BattleNum--;
+    }
     IEnumerator TurnStart()
     {
-        int num = 0;
+        BattleNum = 0;
         int playerFieldNum = 6;
         int enemyFieldNum = 6;
 
@@ -47,17 +60,18 @@ public partial class LogicManager : MonoBehaviour
         {
             card.GetComponent<Card>().TurnStart();
         }
+        yield return new WaitForSeconds(0.5f);
         foreach (GameObject card in player.cards)
         {
             if (card.GetComponent<Card>().IsAttackReady)
-                num++;
+                BattleNum++;
         }
         foreach (GameObject card in enemy.cards)
         {
             if (card.GetComponent<Card>().IsAttackReady)
-                num++;
+                BattleNum++;
         }
-        for(int i = 0; i < num; i++)
+        for(int i = 0; i < BattleNum; i++)
         {
             foreach (GameObject card in player.cards)
             {
@@ -99,7 +113,7 @@ public partial class LogicManager : MonoBehaviour
                 }
                 else
                 {
-                    turnEnablePlayerCards[0].GetComponent<Card>().AttackOrder = false;
+                    turnEnableEnemyCards[0].GetComponent<Card>().AttackOrder = true;
                 }
             }
             yield return new WaitForSeconds(turnDelay);
