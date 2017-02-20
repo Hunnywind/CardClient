@@ -295,6 +295,7 @@ public class Card : MonoBehaviour
         m_speed.color = Color.white;
         m_health.color = Color.white;
         fieldNumber = 0;
+        isEnemyCard = false;
         gameObject.SetActive(false);
     }
 }

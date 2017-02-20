@@ -4,7 +4,6 @@ using GameItem;
 
 namespace CardPositions
 {
-    // 고려해야할 정보: 피아식별, 게임 상태
     public class InHand : CardPosition<Card>
     {
         private GameObject m_drag;

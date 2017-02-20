@@ -75,42 +75,6 @@ namespace CardStates
             return "BATTLE";
         }
     }
-    /*public class Hand : CardState<Card>
-    {
-        public override void enter(Card entity)
-        {
-            if (!entity.IsEnemyCard)
-            {
-                LogicManager.instance.Player.AddCardHand(entity.gameObject);
-            }
-            entity.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-        }
-        public override void update(Card entity)
-        {
-            if(LogicManager.instance.PresentLevel == GameItem.Level.Summon
-                && !entity.IsEnemyCard)
-            {
-                entity.ChangeState(new Setting());
-            }
-        }
-        public override void mouseUp(Card entity)
-        {
-            Debug.Log("Hand MouseUp");
-        }
-        public override void mouseDown(Card entity)
-        {
-            Debug.Log("Hand MouseDown");
-        }
-        public override void mouseDrag(Card entity)
-        {
-        }
-        public override void exit(Card entity)
-        {
-            Debug.Log("Hand Exit");
-            if(!entity.IsEnemyCard)
-            LogicManager.instance.Player.RemoveCardHand(entity.gameObject);
-        }
-    }*/
     public class Return : CardState<Card>
     {
         public override void enter(Card entity)

@@ -26,14 +26,6 @@ class CardDatabase
 
     public void InitData()
     {
-        //StreamReader fp = File.OpenText("./Assets/Resources/image_info.json");
-        //string s = fp.ReadToEnd();
-        //TextAsset textAsset = Resources.Load<TextAsset>("image_info");
-        //var loadData = JsonUtility.FromJson<ImageDataList>(textAsset.text);
-        //for (int i = 0; i < loadData.CardImages.Length; i++)
-        //{
-        //    m_imageList[loadData.CardImages[i].number] = loadData.CardImages[i].name;
-        //}
     }
     public void AddCardData(CardData data)
     {

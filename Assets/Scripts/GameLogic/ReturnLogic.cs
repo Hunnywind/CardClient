@@ -15,7 +15,6 @@ public partial class LogicManager : MonoBehaviour
 
     public void EnemyReturnInfoUpdate(int fieldNum)
     {
-        // use it?
         enemy.AddReturnWait(fieldNum);
     }
 

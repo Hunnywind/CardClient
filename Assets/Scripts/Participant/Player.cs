@@ -112,11 +112,13 @@ public class Player : Participant {
     }
     public void AddMana(int _mana)
     {
+        if (m_mana > 11) return;
         m_mana += _mana;
         CardManaCheck();
     }
     public void SubtractMana(int _mana)
     {
+        if (m_mana < 1) return;
         m_mana -= _mana;
         CardManaCheck();
     }

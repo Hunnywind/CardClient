@@ -47,7 +47,7 @@ namespace LogicStates
         public override void update(LogicManager entity)
         {
             entity.manaText.text = entity.Player.m_mana + " / 12";
-            //entity.Player.CardManaCheck();
+            entity.Player.CardManaCheck();
         }
         public override void exit(LogicManager entity)
         {
